@@ -1,6 +1,34 @@
 This repository has been replaced by [AiZynthModels](https://github.com/MolecularAI/aizynthmodels). Among other things, AiZynthModels includes an updated Chemformer model.
 
 # Chemformer
+
+## Fetching Latent Embeddings 
+
+1. Setup environment 
+```
+# Clone the repository
+git clone https://github.com/prishasatwani/chemformer_project.git
+cd chemformer
+
+# Create the environment
+conda env create -f environment.yml
+
+# Activate the environment
+conda activate chemformer
+```
+
+2. Download the pre-trained model checkpoint [here](https://az.app.box.com/s/7eci3nd9vy0xplqniitpk02rbg9q2zcq/folder/144881804954). 
+3. Edit config file (config/predict.yaml)
+  - Add model_path
+
+4. Run latent_embeddings_single script to get encoder memory
+```
+cd Chemformer
+python -m molbart.latent_embeddings_single
+```
+
+-----
+
 This repository contains the code used to generate the results in the Chemformer papers [[1]](#1) [[2]](#2) [[3]](#3).
 
 The Chemformer project aimed to pre-train a BART transformer language model [[4]](#4) on molecular SMILES strings [[5]](#5) by optimising a de-noising objective. We hypothesized that pre-training would lead to improved generalisation, performance, training speed and validity on downstream fine-tuned tasks. 

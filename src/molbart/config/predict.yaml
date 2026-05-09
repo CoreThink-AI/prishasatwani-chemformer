@@ -10,23 +10,24 @@ defaults:
 batch_size: 64
 n_beams: 10
 n_unique_beams: null
-n_gpus: 1
+n_gpus: 0
 
 # Data
 data_path: ./src/molbart/bigdata/seq-to-seq_datasets/uspto_1.tsv
 output_sampled_smiles: null
-vocabulary_path: null
+vocabulary_path: bart_vocab_downstream.json
 task: forward_prediction    # ["forward_prediction", "backward_prediction", "mol_opt"]
 i_chunk: 0
 n_chunks: 1
 data_device: cuda
 
 # Model
-model_path: null
+model_path: ".../Chemformer/combined.ckpt" 
 model_type: bart            # ["bart", "unified"]
 dataset_part: full      # ["full", "train", "val", "test"]
 train_mode: eval
 reactants: null
 
-datamodule:
-  - SynthesisDataModule
+datamodule: [molbart.data.seq2seq_data.Uspto50DataModule]
+  #- SynthesisDataModule
+  

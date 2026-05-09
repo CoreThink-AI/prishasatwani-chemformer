@@ -79,13 +79,14 @@ def calc_train_steps(args, dm, n_gpus=None):
     dm.setup()
     if n_gpus > 0:
         batches_per_gpu = math.ceil(len(dm.train_dataloader()) / float(n_gpus))
-    else:
-        raise ValueError("Number of GPUs should be > 0 in training.")
-    train_steps = math.ceil(batches_per_gpu / args.acc_batches) * args.n_epochs
+    #else:
+        #raise ValueError("Number of GPUs should be > 0 in training.")
+    train_steps = 1 #math.ceil(batches_per_gpu / args.acc_batches) * args.n_epochs
     return train_steps
 
 
-def build_trainer(config, n_gpus=None):
+def build_trainer(config, n_gpus=0):
+    
 
     print("Instantiating loggers...")
     logger = instantiate_logger(config.get("logger"))
@@ -95,13 +96,14 @@ def build_trainer(config, n_gpus=None):
 
     print("Instantiating plugins...")
     plugins: list[Plugin] = instantiate_plugins(config.get("plugin"))
-
+    
     if n_gpus > 1:
         config.trainer.accelerator = "ddp"
     else:
         plugins = None
 
     print("Building trainer...")
+    
     trainer: pl.Trainer = hydra.utils.instantiate(
         config.trainer, callbacks=callbacks.objects(), logger=logger, plugins=plugins
     )
