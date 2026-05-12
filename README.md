@@ -14,7 +14,16 @@ uv pip install -e .
 
 ## Model and training data
 
-Download the pre-trained model checkpoint [here](https://az.app.box.com/s/7eci3nd9vy0xplqniitpk02rbg9q2zcq/folder/144881804954)
+Download the `hparams.yaml` (hyperparameters) and `step=1000000.ckpt` checkpoint for the "mask_aug" transformer model by browsing to [AstraZeneca's public az.Box.com folder](https://az.app.box.com/s/7eci3nd9vy0xplqniitpk02rbg9q2zcq/folder/144881804954) and clicking the download button, saving both files in the ``src/molbart/bigmodels/pre-trained/`` directory.
+
+Additional models and datasets can be found on Figshare and elsewhere:
+- synthesis: https://figshare.com/articles/code/Chemformer_USPTO-50K_forward_/23960724
+- retrosynthesis: https://figshare.com/articles/code/Chemformer_USPTO-50K_backward_/23958114 
+- chemical properties datasets: https://solr.ideaconsult.net/search/excape/
+- image to SMILES: https://huggingface.co/datasets/deepcopy/USPTO-680k
+-
+
+
 
 3. Edit config file (config/predict.yaml)
   - Add model_path

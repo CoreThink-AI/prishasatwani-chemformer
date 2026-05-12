@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Environment setup
 
 ```bash
-uv venv -p 3.8 && uv sync          # create venv and install all deps
+uv venv -p 3.8 && uv sync           # create venv and install all deps
 uv sync --extra dev                 # include dev/test deps
 PYTHONPATH=src python -m pytest     # run tests (PYTHONPATH required)
 ```
@@ -27,7 +27,7 @@ PYTHONPATH=src python -m pytest tests/test_decoder.py::test_greedy_decode -v
 # Inference scoring (runs backward/forward prediction from CLI)
 PYTHONPATH=src python src/molbart/inference_score.py
 
-# Start the retrosynthesis FastAPI service locally
+# Start the retrosynthesis FastAPI service locally (UNTESTED! bart_vocab.json likely incopatible with *.ckpt!!!)
 CHEMFORMER_MODEL=<path>.ckpt CHEMFORMER_VOCAB=src/molbart/bigmodels/bart_vocab.json \
     uvicorn chemformer.service.retrosynthesis_service:app --port 8080
 
@@ -68,7 +68,7 @@ cfg.datamodule = None  # required when passing data manually
 
 ## Checkpoint compatibility
 
-Old Figshare checkpoints (e.g. `backward_uspto50k.ckpt`) pickle `molbart.decoder.DecodeSampler` and `molbart.tokeniser.MolEncTokeniser`. The shim files re-export these from their current locations so `torch.load()` works without errors.
+2021 Figshare Astrazenica pretraining checkpoints (e.g. `backward_uspto50k.ckpt`) pickle `molbart.decoder.DecodeSampler` and `molbart.tokeniser.MolEncTokeniser` [sic]. The shim files re-export these from their current locations so `torch.load()` works without errors.
 
 When loading a new checkpoint, run:
 ```python
