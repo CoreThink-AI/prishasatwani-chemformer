@@ -2,27 +2,27 @@ This repository has been replaced by [AiZynthModels](https://github.com/Molecula
 
 # Chemformer
 
-## Fetching Latent Embeddings 
+## Installing from source
 
-1. Setup environment 
-```
-# Clone the repository
-git clone https://github.com/prishasatwani/chemformer_project.git
+```bash
+git clone https://gitlab.com/hobs/chemformer.git
 cd chemformer
-
-# Create the environment
-conda env create -f environment.yml
-
-# Activate the environment
-conda activate chemformer
+uv venv -p 3.8
+source .venv/bin/activate
+uv pip install -e .
 ```
 
-2. Download the pre-trained model checkpoint [here](https://az.app.box.com/s/7eci3nd9vy0xplqniitpk02rbg9q2zcq/folder/144881804954). 
+## Model and training data
+
+Download the pre-trained model checkpoint [here](https://az.app.box.com/s/7eci3nd9vy0xplqniitpk02rbg9q2zcq/folder/144881804954)
+
 3. Edit config file (config/predict.yaml)
   - Add model_path
 
 4. Run latent_embeddings_single script to get encoder memory
-```
+
+## Generate SMILES embedding vectors (MolBART)
+```bash
 cd Chemformer
 python -m molbart.latent_embeddings_single
 ```
