@@ -228,17 +228,78 @@ class LogicalOr(Criterion):
 
 
 def beamsearch(node, beam_size, stop_criterion, verbose=DEBUG, limit=512):
-    """ Generate a new state tensor (SMILES str) repeatedly until stop_criteria are met (max_tokens or EOS zeros in tensor) """
+    """ Generate a new state tensor (SMILES str) repeatedly until stop_criteria are met (max_tokens or EOS zeros in tensor)
+
+    >>> print(f"vars(node): {vars(node)}")
+    {'model': BARTModel(
+        (emb): Embedding(523, 1024, padding_idx=0)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (encoder): TransformerEncoder(
+            (layers): ModuleList(
+                (0): PreNormEncoderLayer(...)
+                (1): PreNormEncoderLayer(...)
+                ...
+                (7): PreNormEncoderLayer(
+                    (self_attn): MultiheadAttention(
+                      (out_proj): _LinearWithBias(in_features=1024, out_features=1024, bias=True)
+                )
+                (linear1): Linear(in_features=1024, out_features=4096, bias=True)
+                (dropout): Dropout(p=0.1, inplace=False)
+                (linear2): Linear(in_features=4096, out_features=1024, bias=True)
+                (norm1): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (norm2): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+                (dropout1): Dropout(p=0.1, inplace=False)
+                (dropout2): Dropout(p=0.1, inplace=False)
+            )
+        )
+    (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+    )
+    (decoder): TransformerDecoder(
+        (layers): ModuleList(
+        (0): PreNormDecoderLayer(...),
+        ...
+        (7): PreNormDecoderLayer(
+        (self_attn): MultiheadAttention(
+          (out_proj): _LinearWithBias(in_features=1024, out_features=1024, bias=True)
+        )
+        (multihead_attn): MultiheadAttention(
+          (out_proj): _LinearWithBias(in_features=1024, out_features=1024, bias=True)
+        )
+        (linear1): Linear(in_features=1024, out_features=4096, bias=True)
+        (dropout): Dropout(p=0.1, inplace=False)
+        (linear2): Linear(in_features=4096, out_features=1024, bias=True)
+        (norm1): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+        (norm2): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+        (norm3): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+        (dropout1): Dropout(p=0.1, inplace=False)
+        (dropout2): Dropout(p=0.1, inplace=False)
+        (dropout3): Dropout(p=0.1, inplace=False)
+        )
+        (norm): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+    )
+    (loss_function): CrossEntropyLoss()
+    (token_fc): Linear(in_features=1024, out_features=523, bias=True)
+        (log_softmax): LogSoftmax(dim=2)),
+    'device': device(type='cpu'), 'data_device': device(type='cpu'), 'batch_size': 4,
+        'x': tensor([
+            [[ 4.7961e-02,  2.1419e-02, -2.4414e-02,  ..., -1.1636e-02,
+               1.6926e-02, -9.5465e-04],
+            ...
+            [-2.2127e-01,  3.2250e-01, -4.8981e-01,  ...,  6.5624e-03, -4.1881e-01, -4.4510e-01]]]),
+        'x_mask': tensor([[False, ... False], ... [False, ... True]]),
+        'vocabulary': <molbart.utils.tokenizers.ChemformerTokenizer object at 0x7e919f847190>,
+        'y': tensor([[2], [2], [2], [2]]),
+        'll_mask': tensor([False]), 'pos': 0, 'beam_width': 10}
+    """
     node.set_beam_width(beam_size)
     print(f"Sampling with beam_size: {beam_size}")
-    # print(f"vars(node): {vars(node)}")
     print("limit\tnode\tnode.get_actions.shape()")
     print(f"{limit}\t{node}\t{node.get_actions.shape()}")
     while not stop_criterion(node):
         limit -= 1
         a = node.get_actions()
         if verbose:
-            print(f"{limit}\t{node}\t{a.size()}")
+            print(f"limit={limit}\ttype(node)={type(node)}\ta.size()={a.size()}\ta={a}")
         node.action(a)
         if limit <= 0:
             print("WARNING: Unable to generate a complete SMILES str!!!")
