@@ -1,12 +1,12 @@
-import hydra
-import molbart.utils.data_utils as util
-from molbart.constants import CONFIG_DIR, DATA_DIR, MODELS_DIR
-from molbart.models import Chemformer
-import omegaconf as oc
-import pandas as pd
 from pathlib import Path
 
+import hydra
+import omegaconf as oc
+import pandas as pd
 
+import molbart.utils.data_utils as util
+from molbart.constants import DATA_DIR, MODELS_DIR
+from molbart.models import Chemformer
 
 
 # @hydra.main(version_base=None, config_path=CONFIG_DIR, config_name="inference_score")
@@ -48,8 +48,8 @@ if __name__ == "__main__":
     cfg.model_path = str(Path(MODELS_DIR) / 'pre-trained' / 'combined-large' / 'step=1000000.ckpt')
     cfg.vocabulary_path = str(Path(cfg.model_path).parent / 'bart_vocab.json')
     cfg.n_gpus = 0
-    
-    
+
+
     print(f'Loading Chemformer model with cfg:\n{cfg}')
     chemformer = Chemformer(cfg)
 
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     # cfg.vocabulary_path = str(Path(MODELS_DIR) / 'pre-trained' / 'combined-large' / 'tokenizer_vocab.json')
 
     print(oc.OmegaConf.to_yaml(cfg))
-    
+
     print("Running model inference and scoring...")
 
     chemformer = main(cfg, chemformer=chemformer)

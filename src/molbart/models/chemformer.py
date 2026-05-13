@@ -1,4 +1,3 @@
-import os
 from argparse import Namespace
 from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 
@@ -9,12 +8,12 @@ import torch
 from omegaconf import DictConfig, ListConfig
 from torch.utils.data import DataLoader
 
-from molbart.data import DataCollection
 import molbart.utils.data_utils as util
+from molbart.data import DataCollection
 from molbart.models import BARTModel, UnifiedModel
+from molbart.utils import trainer_utils
 from molbart.utils.samplers import BeamSearchSampler
 from molbart.utils.tokenizers import ChemformerTokenizer
-from molbart.utils import trainer_utils
 
 DEFAULT_WEIGHT_DECAY = 0
 
@@ -110,7 +109,7 @@ class Chemformer:
             data_device = "cpu"
 
         self.device = device
-        
+
         print(f'Chemformer.config.vocabulary_path={config.vocabulary_path}')
         self.tokenizer = ChemformerTokenizer(filename=config.vocabulary_path)
 
@@ -567,7 +566,8 @@ class Chemformer:
                 if self.model.sampler.sample_unique:
                     smiles_batch = self.sampler.smiles_unique
                     log_lhs_batch = self.sampler.log_lhs_unique
-            import pdb; pdb.set_trace()
+            assert False, "THIS NEVER HAPPENED DURING inference_score.py run!!!"
+            import pdb; pdb.set_trace()  # noqa
             sampled_smiles.extend(smiles_batch)
             log_lhs.extend(log_lhs_batch)
             target_smiles.extend(batch["target_smiles"])
