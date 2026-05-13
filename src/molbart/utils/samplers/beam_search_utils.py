@@ -1,5 +1,6 @@
 import torch
 import torch.utils.data as tud
+
 from molbart.constants import DEBUG
 
 
@@ -230,8 +231,9 @@ def beamsearch(node, beam_size, stop_criterion, verbose=DEBUG, limit=512):
     """ Generate a new state tensor (SMILES str) repeatedly until stop_criteria are met (max_tokens or EOS zeros in tensor) """
     node.set_beam_width(beam_size)
     print(f"Sampling with beam_size: {beam_size}")
-    print(f"vars(node): {vars(node)}")
-    print(f"limit\tnode\tnode.get_actions.shape()")
+    # print(f"vars(node): {vars(node)}")
+    print("limit\tnode\tnode.get_actions.shape()")
+    print(f"{limit}\t{node}\t{node.get_actions.shape()}")
     while not stop_criterion(node):
         limit -= 1
         a = node.get_actions()
@@ -241,8 +243,6 @@ def beamsearch(node, beam_size, stop_criterion, verbose=DEBUG, limit=512):
         if limit <= 0:
             print("WARNING: Unable to generate a complete SMILES str!!!")
             break
-
-
     a = node.get_actions()
 
     end_tokens = node.vocabulary["end"] * torch.logical_not(node.ll_mask).type(node.y.dtype)
