@@ -2,6 +2,7 @@ src/molbart/bigdata
 src/molbart/bigmodels
 .pytest_cache
 __pycache__
+*.csv.tsv
 *.zip
 *.pickle
 *.chkpt
