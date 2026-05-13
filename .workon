@@ -1,11 +1,4 @@
 source .venv/bin/activate
-# PNAME=$(python -c "from pathlib import Path ; print(Path.cwd().name)")
-# export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/$PNAME-sa-key.json
-# # Launch the gcloud cloud_sql_proxy using the new credentials
-# cloud-sql-proxy --port 5431 \
-#     --credentials-file ~/.config/gcloud/$PNAME-sa-key.json \
-#     $PNAME-by-$USERNAME:us-central1:$PNAME-pubchem
-# gcloud config set account hobson@corethink.ai
-# gcloud config set project biochem-db-by-hobs
-# gcloud auth login hobson@corethink.ai
 git status
+source push
+
