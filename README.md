@@ -5,11 +5,11 @@ This repository has been replaced by [AiZynthModels](https://github.com/Molecula
 ## Installing from source
 
 ```bash
-git clone https://gitlab.com/hobs/chemformer.git
-cd chemformer
+git clone git@github.com:CoreThink-AI/prishasatwani-chemformer chemformer
+cd chemformer 
 uv venv -p 3.8
 source .venv/bin/activate
-uv pip install -e .
+uv pip install -e .[dev]
 ```
 
 ## Model and training data
