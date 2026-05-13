@@ -5,9 +5,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Environment setup
 
 ```bash
-uv venv -p 3.8 && uv sync           # create venv and install all deps
-uv sync --extra dev                 # include dev/test deps
-PYTHONPATH=src python -m pytest     # run tests (PYTHONPATH required)
+uv venv -p 3.8
+source .venv/bin/activate
+uv pip install -e .[dev]
+PYTHONPATH=src python -m pytest
 ```
 
 Python 3.8 is required (`pyproject.toml` pins `>=3.8.0,<3.9.0`). The `.python-version` file pins `3.8.20`.
