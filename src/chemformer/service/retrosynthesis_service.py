@@ -22,7 +22,7 @@ from fastapi import FastAPI, HTTPException
 from molbart.constants import CONFIG_DIR
 from molbart.data import SynthesisDataModule
 from molbart.models import Chemformer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 def _resolve_path(uri: str) -> str:
@@ -51,28 +51,81 @@ cfg.vocabulary_path = _resolve_path(os.environ["CHEMFORMER_VOCAB"])
 
 chemformer = Chemformer(cfg)
 
-app = FastAPI(title="Chemformer Retrosynthesis", version="1.0")
+_DESCRIPTION = """
+Predict synthetic routes for a target molecule using the Chemformer BART model
+fine-tuned on USPTO-50K reactions (backward/retrosynthesis prediction).
+
+## Interpreting log-likelihood
+
+| Range | Confidence |
+|-------|-----------|
+| > −2  | High — well-represented reaction class |
+| −2 to −10 | Moderate — plausible but less common |
+| < −10 | Low — out-of-distribution for this model |
+
+## Interactive docs
+- **Swagger UI**: [`/docs`](/docs)
+- **ReDoc**: [`/redoc`](/redoc)
+- **OpenAPI JSON**: [`/openapi.json`](/openapi.json)
+"""
+
+app = FastAPI(
+    title="Chemformer Retrosynthesis",
+    version="1.0",
+    description=_DESCRIPTION,
+    contact={"name": "CoreThink AI", "url": "https://github.com/CoreThink-AI/prishasatwani-chemformer"},
+    license_info={"name": "MIT"},
+)
 
 
 class RetrosynthesisRequest(BaseModel):
-    smiles: str
-    n_beams: int = cfg.n_beams
+    smiles: str = Field(
+        ...,
+        description="SMILES string of the target product molecule.",
+        examples=["CC(=O)Oc1ccccc1C(=O)O"],
+    )
+    n_beams: int = Field(
+        default=cfg.n_beams,
+        ge=1,
+        le=50,
+        description="Number of beam-search hypotheses to return (1–50).",
+    )
 
 
 class RetrosynthesisPrediction(BaseModel):
-    reaction_smarts: str  # reactants>>product
-    reactants_smiles: str
-    log_likelihood: float
+    reaction_smarts: str = Field(
+        description="Full reaction in SMARTS notation: reactants>>product.",
+        examples=["CC(=O)Cl.O=C(O)c1ccccc1O>>CC(=O)Oc1ccccc1C(=O)O"],
+    )
+    reactants_smiles: str = Field(
+        description="Dot-separated SMILES of predicted reactants.",
+        examples=["CC(=O)Cl.O=C(O)c1ccccc1O"],
+    )
+    log_likelihood: float = Field(
+        description="Model log-likelihood (higher = more confident). Values above −2 indicate high confidence.",
+        examples=[-0.74],
+    )
 
 
 class RetrosynthesisResponse(BaseModel):
-    product_smiles: str
-    predictions: List[RetrosynthesisPrediction]
+    product_smiles: str = Field(description="The input product SMILES, echoed back.")
+    predictions: List[RetrosynthesisPrediction] = Field(
+        description="Ranked list of retrosynthetic predictions, best first."
+    )
 
 
-@app.post("/retrosynthesis/predict", response_model=RetrosynthesisResponse)
+@app.post(
+    "/retrosynthesis/predict",
+    response_model=RetrosynthesisResponse,
+    summary="Predict retrosynthetic routes",
+    response_description="Ranked retrosynthetic predictions for the input molecule.",
+)
 def predict(request: RetrosynthesisRequest):
-    """Predict reactants for a given product SMILES using retrosynthesis (backward prediction)."""
+    """Given a product SMILES, return ranked reactant sets predicted by beam search.</p>
+
+    Each prediction includes the reactant SMILES, the full reaction SMARTS, and a
+    log-likelihood score. Results are sorted best-first (least negative log-likelihood).
+    """
     n_beams = request.n_beams
 
     datamodule = SynthesisDataModule(
@@ -113,7 +166,7 @@ def predict(request: RetrosynthesisRequest):
     )
 
 
-@app.get("/health")
+@app.get("/health", summary="Health check", include_in_schema=False)
 def health():
     return {"status": "ok"}
 
