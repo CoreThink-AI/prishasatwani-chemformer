@@ -4,3 +4,5 @@ echo Pushing to upstream-fork main : git@github.com:hobson/prishasatwani-chemfor
 git push upstream-fork main
 echo Pushing to origin main : git@github.com:CoreThink-AI/prishasatwani-chemformer
 git push -u origin main
+echo Pushing to gitlab main : git@gitlab.com:hobs/chemformer
+git push -u gitlab main
