@@ -43,6 +43,11 @@ all = [
     "chemformer[dev,data]",
     ]
 
+service = [
+    "uvicorn[standard]>=0.22.0",
+    "google-cloud-storage>=2.0,<3.0",
+]
+
 dev = [
     "pre-commit",
     "pytest",

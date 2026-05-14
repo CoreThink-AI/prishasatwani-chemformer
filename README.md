@@ -7,23 +7,26 @@ This repository has been replaced by [AiZynthModels](https://github.com/Molecula
 ```bash
 git clone git@github.com:CoreThink-AI/prishasatwani-chemformer chemformer
 cd chemformer 
+curl -LsSf https://astral.sh/uv/install.sh | sh
 uv venv -p 3.8
 source .venv/bin/activate
 uv pip install -e .[dev]
+mkdir -p src/molbart/bigmodels/pre-trained src/molbart/bigdata
 ```
 
 ## Model and training data
 
-Download the `hparams.yaml` (hyperparameters) and `step=1000000.ckpt` checkpoint for the "mask_aug" transformer model by browsing to [AstraZeneca's public az.Box.com folder](https://az.app.box.com/s/7eci3nd9vy0xplqniitpk02rbg9q2zcq/folder/144881804954) and clicking the download button, saving both files in the ``src/molbart/bigmodels/pre-trained/`` directory.
+Download the `hparams.yaml` (hyperparameters) and `step=1000000.ckpt` checkpoint for the "mask_aug" pretrained transformer here:
+
+[AstraZeneca's public az.Box.com folder](https://az.app.box.com/s/7eci3nd9vy0xplqniitpk02rbg9q2zcq/folder/144881804954)
+
+Click the download button, saving both files in the ``src/molbart/bigmodels/pre-trained/`` directory.
 
 Additional models and datasets can be found on Figshare and elsewhere:
 - synthesis: https://figshare.com/articles/code/Chemformer_USPTO-50K_forward_/23960724
 - retrosynthesis: https://figshare.com/articles/code/Chemformer_USPTO-50K_backward_/23958114 
 - chemical properties datasets: https://solr.ideaconsult.net/search/excape/
 - image to SMILES: https://huggingface.co/datasets/deepcopy/USPTO-680k
--
-
-
 
 3. Edit config file (config/predict.yaml)
   - Add model_path

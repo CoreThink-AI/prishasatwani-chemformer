@@ -1,7 +1,9 @@
 # Large model and data files — supply via CHEMFORMER_MODEL / CHEMFORMER_VOCAB env vars
 src/molbart/bigmodels/
 src/molbart/bigdata/
+src/chemformer/data/
 data/
+*.tsv
 
 # Python artifacts
 **/__pycache__/

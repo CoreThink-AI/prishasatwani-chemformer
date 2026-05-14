@@ -1,5 +1,5 @@
 # ---- build stage ----
-FROM python:3.7-slim AS builder
+FROM python:3.8-slim AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -9,21 +9,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxext6 \
  && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /build
-COPY requirements.txt ./
+# Install uv from its official image
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-RUN python -m venv /venv \
- && /venv/bin/pip install --no-cache-dir --upgrade pip \
- && /venv/bin/pip install --no-cache-dir -r requirements.txt \
- && /venv/bin/pip install --no-cache-dir \
-    "uvicorn==0.22.0" \
-    "google-cloud-storage>=2.0,<3.0"
+WORKDIR /build
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
+
+# Create venv and install project + service extras via uv
+RUN uv venv /venv \
+ && uv pip install --python /venv/bin/python --no-cache ".[service]"
 
 
 # ---- runtime stage ----
-FROM python:3.7-slim
+FROM python:3.8-slim
 
-# Runtime libs only (no compilers)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrender1 \
     libxext6 \
@@ -34,7 +34,6 @@ RUN useradd --create-home --uid 1000 appuser
 
 WORKDIR /app
 
-# Copy the venv from builder and the source tree
 COPY --from=builder /venv /venv
 COPY --chown=appuser:appuser src/ ./src/
 
