@@ -1,4 +1,6 @@
 """Module containing atom-mapping functionality needed to run disconnection-Chemformer"""
+from typing import Dict, List, Sequence, Tuple
+
 import numpy as np
 from rdkit import Chem
 
@@ -8,7 +10,6 @@ try:
 except ImportError:
     RXN_MAPPER_ENV_OK = False
 
-from typing import Dict, List, Sequence, Tuple
 
 
 class DisconnectionAtomMapper:

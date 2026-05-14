@@ -1,7 +1,8 @@
 """ Module containing classes to load seq2seq data"""
+from typing import Any, Dict, List, Tuple
+
 import pandas as pd
 from rdkit import Chem
-from typing import Any, Dict, List, Tuple
 
 from molbart.data.base import ReactionListDataModule
 
@@ -26,10 +27,11 @@ class Uspto50DataModule(ReactionListDataModule):
             reactants = self._batch_augmenter(reactants)
             products = self._batch_augmenter(products)
 
-        if self._include_type_token and not self.reverse:
-            reactants = [item["type_tokens"] + smi for item, smi in zip(batch, reactants)]
-        if self._include_type_token and self.reverse:
-            products = [item["type_tokens"] + smi for item, smi in zip(batch, products)]
+        if self._include_type_token:
+            if self.reverse:
+                products = [item["type_tokens"] + smi for item, smi in zip(batch, products)]
+            else: # not self.reverse:
+                reactants = [item["type_tokens"] + smi for item, smi in zip(batch, reactants)]
 
         return reactants, products
 

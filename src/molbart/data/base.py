@@ -8,14 +8,13 @@ from typing import Any, Dict, List, Sequence, Tuple
 import pandas as pd
 import pytorch_lightning as pl
 import torch
-from pysmilesutils.augment import SMILESAugmenter
-from pysmilesutils.datautils import TokenSampler
 from rdkit import Chem
 from torch.utils.data import DataLoader, Dataset, SequentialSampler
-from pysmilesutils.datautils import ChunkBatchSampler
 
 from molbart.data.util import BatchEncoder, build_attention_mask, build_target_mask
 from molbart.utils.tokenizers import ChemformerTokenizer, TokensMasker
+from pysmilesutils.augment import SMILESAugmenter
+from pysmilesutils.datautils import ChunkBatchSampler, TokenSampler
 
 
 class ChemistryDataset(Dataset):
@@ -430,8 +429,8 @@ class ReactionListDataModule(_AbsDataModule):
 
     The reactions are read from a text-file containing reactions
     SMILES strings, one on each row.
-    If only sinlge molecules are provided in the text-file, the
-    product and reactants are intepreted to be equal.
+    If only single molecules are provided in the text-file, the
+    product and reactants are interpreted to be equal.
 
     :param augment_prob: the probability of augmenting the sequences in training
     :param reverse: if True, will return the encoder data as the decoder data and vice versa

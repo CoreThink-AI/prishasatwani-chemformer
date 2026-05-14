@@ -14,13 +14,13 @@ seed: 1
 n_gpus: 0
 
 # Data
-data_path: src/molbart/bigdata/seq-to-seq_datasets/uspto_260_test.tsv
+data_path: src/molbart/bigdata/seq-to-seq_datasets/uspto_32_test.tsv
 # data_path: src/molbart/bigdata/seq-to-seq_datasets/uspto_1_test.tsv
 dataset_part: test  # Which dataset split to run inference on: full|train|val|test
 vocabulary_path: null
 data_device: cpu
 task: forward_prediction  # ["forward_prediction", "backward_prediction"]
-batch_size: 4  # 64
+batch_size: 2  # 64
 i_chunk: 0
 n_chunks: 1
 

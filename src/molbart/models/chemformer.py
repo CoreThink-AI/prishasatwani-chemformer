@@ -7,6 +7,7 @@ import pytorch_lightning as pl
 import torch
 from omegaconf import DictConfig, ListConfig
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 import molbart.utils.data_utils as util
 from molbart.data import DataCollection
@@ -557,7 +558,7 @@ class Chemformer:
         sampled_smiles = []
         log_lhs = []
         target_smiles = []
-        for batch in dataloader:
+        for batch in tqdm(dataloader):
             batch = self.on_device(batch)
             with torch.no_grad():
                 smiles_batch, log_lhs_batch = self.model.sample_molecules(

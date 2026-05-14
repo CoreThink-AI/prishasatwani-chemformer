@@ -3,6 +3,7 @@ import random
 from typing import Any, Dict, List, Optional, Tuple
 
 import torch
+
 from pysmilesutils.tokenize import SMILESTokenizer
 
 StrList = List[str]
@@ -49,6 +50,13 @@ class ChemformerTokenizer(SMILESTokenizer):
         self._sep_token = sep_token
         self._chem_start_idx = 6  # Default, number of special tokens + 1
         self._chem_token_idxs: Optional[List[int]] = None
+        print('ChemformerTokenizer().__init__(')
+        print(f'          vocabulary_path: {filename}')
+        print(f'beginning_of_smiles_token: {beginning_of_smiles_token}')
+        print(f'      end_of_smiles_token: {end_of_smiles_token}')
+        print(f'               mask_token: {mask_token}')
+        print(f'                sep_token: {sep_token}')
+        print(f'            unknown_token: {unknown_token}')
         super().__init__(
             smiles=smiles,
             tokens=tokens,
