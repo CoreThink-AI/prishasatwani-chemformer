@@ -567,8 +567,6 @@ class Chemformer:
                 if self.model.sampler.sample_unique:
                     smiles_batch = self.sampler.smiles_unique
                     log_lhs_batch = self.sampler.log_lhs_unique
-            assert False, "THIS NEVER HAPPENED DURING inference_score.py run!!!"
-            import pdb; pdb.set_trace()  # noqa
             sampled_smiles.extend(smiles_batch)
             log_lhs.extend(log_lhs_batch)
             target_smiles.extend(batch["target_smiles"])
