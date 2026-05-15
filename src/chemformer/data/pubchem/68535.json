@@ -1,0 +1,12 @@
+{
+  "cid": 68535,
+  "MolecularFormula": "C4H4O2",
+  "MolecularWeight": "84.07",
+  "SMILES": "CC#CC(=O)O",
+  "InChIKey": "LUEHNHVFDCZTGL-UHFFFAOYSA-N",
+  "IUPACName": "but-2-ynoic acid",
+  "XLogP": 0.8,
+  "Complexity": 112,
+  "vendor_count": 205,
+  "bioassay_count": 68
+}

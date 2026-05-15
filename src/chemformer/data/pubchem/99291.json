@@ -1,0 +1,12 @@
+{
+  "cid": 99291,
+  "MolecularFormula": "C8H9NO2",
+  "MolecularWeight": "151.16",
+  "SMILES": "C1=CC=C(C=C1)[C@@H](C(=O)O)N",
+  "InChIKey": "ZGUNAGUHMKGQNY-ZETCQYMHSA-N",
+  "IUPACName": "(2S)-2-amino-2-phenylacetic acid",
+  "XLogP": -1.7,
+  "Complexity": 141,
+  "vendor_count": 169,
+  "bioassay_count": 20
+}

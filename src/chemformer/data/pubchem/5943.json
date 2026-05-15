@@ -1,0 +1,12 @@
+{
+  "cid": 5943,
+  "MolecularFormula": "CCl4",
+  "MolecularWeight": "153.8",
+  "SMILES": "C(Cl)(Cl)(Cl)Cl",
+  "InChIKey": "VZGDMQKNWNREIO-UHFFFAOYSA-N",
+  "IUPACName": "tetrachloromethane",
+  "XLogP": 2.8,
+  "Complexity": 19,
+  "vendor_count": 141,
+  "bioassay_count": 1093
+}

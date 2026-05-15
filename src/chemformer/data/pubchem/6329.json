@@ -1,0 +1,12 @@
+{
+  "cid": 6329,
+  "MolecularFormula": "CH5N",
+  "MolecularWeight": "31.057",
+  "SMILES": "CN",
+  "InChIKey": "BAVYZALUXZFZLV-UHFFFAOYSA-N",
+  "IUPACName": "methanamine",
+  "XLogP": -0.7,
+  "Complexity": 2,
+  "vendor_count": 228,
+  "bioassay_count": 10
+}

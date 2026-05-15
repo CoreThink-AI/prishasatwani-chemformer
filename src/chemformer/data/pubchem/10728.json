@@ -1,0 +1,12 @@
+{
+  "cid": 10728,
+  "MolecularFormula": "C11H12O4",
+  "MolecularWeight": "208.21",
+  "SMILES": "CCOC(=O)C1=CC=CC=C1OC(=O)C",
+  "InChIKey": "UYDSGXAKLVZWIJ-UHFFFAOYSA-N",
+  "IUPACName": "ethyl 2-acetyloxybenzoate",
+  "XLogP": 1.6,
+  "Complexity": 237,
+  "vendor_count": 105,
+  "bioassay_count": 0
+}

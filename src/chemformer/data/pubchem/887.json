@@ -1,0 +1,12 @@
+{
+  "cid": 887,
+  "MolecularFormula": "CH4O",
+  "MolecularWeight": "32.042",
+  "SMILES": "CO",
+  "InChIKey": "OKKJLVBELUTLKV-UHFFFAOYSA-N",
+  "IUPACName": "methanol",
+  "XLogP": -0.5,
+  "Complexity": 2,
+  "vendor_count": 1161,
+  "bioassay_count": 602
+}

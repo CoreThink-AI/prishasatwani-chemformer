@@ -1,0 +1,12 @@
+{
+  "cid": 603589,
+  "MolecularFormula": "C12H12N2",
+  "MolecularWeight": "184.24",
+  "SMILES": "CC1=CC=C(C=C1)NC2=CN=CC=C2",
+  "InChIKey": "VSMARCBHVFVKKN-UHFFFAOYSA-N",
+  "IUPACName": "N-(4-methylphenyl)pyridin-3-amine",
+  "XLogP": 2.8,
+  "Complexity": 162,
+  "vendor_count": 32,
+  "bioassay_count": 0
+}
