@@ -95,7 +95,8 @@ def expand(smiles, depth, max_depth, min_ll, max_mw, n_beams, model, url, visite
         node["status"] = "already_expanded"
         return node
 
-    if _is_leaf(smiles, max_mw):
+    # Only treat sub-fragments (depth > 0) as leaves — never the query molecule itself.
+    if depth > 0 and _is_leaf(smiles, max_mw):
         node["status"] = "leaf"
         node["estimated_mw"] = round(_estimate_mw(smiles), 1)
         return node
@@ -157,12 +158,12 @@ def _pathways_from_node(node):
 
 def extract_pathways(tree, max_pathways: int = 4) -> list:
     """Return up to max_pathways complete pathways, ranked by bottleneck log-likelihood."""
-    all_paths = list(_pathways_from_node(tree))
+    all_paths = [p for p in _pathways_from_node(tree) if p]  # skip empty (root is leaf)
     if not all_paths:
         return []
 
     def score(path):
-        return min((s["log_likelihood"] for s in path), default=0.0)
+        return min(s["log_likelihood"] for s in path)
 
     all_paths.sort(key=score, reverse=True)
     return all_paths[:max_pathways]
