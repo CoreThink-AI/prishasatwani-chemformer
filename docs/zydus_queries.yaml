@@ -1,0 +1,124 @@
+# Retrosynthesis test molecules for Zydus evaluation.
+# query_name:     informal name used in testing / search query
+# pubchem_cid:    PubChem Compound ID (canonical, disambiguates the query name)
+# pubchem_name:   preferred IUPAC name from PubChem
+# smiles:         IsomericSMILES from PubChem (includes stereochemistry)
+# complexity:     Bertz/Hendrickson/Ihlenfeldt complexity score (unitless integer)
+# inchikey:       InChIKey (fixed-length hash; use for cross-database lookups)
+# inchi:          full InChI string
+# vendor_count:   distinct PubChem-registered sources/suppliers
+# bioassay_count: distinct PubChem BioAssay AIDs in which compound was tested
+# Source: docs/orforglipron_retrosynthesis_with_chemformer_molbart_evaluation_report.md
+
+molecules:
+  - query_name: Aspirin
+    pubchem_cid: 2244
+    pubchem_name: "2-acetyloxybenzoic acid"
+    smiles: "CC(=O)OC1=CC=CC=C1C(=O)O"
+    complexity: 212
+    inchikey: "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
+    inchi: "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)"
+    vendor_count: 533
+    bioassay_count: 3367
+
+  - query_name: Ibuprofen
+    pubchem_cid: 3672
+    pubchem_name: "2-[4-(2-methylpropyl)phenyl]propanoic acid"
+    smiles: "CC(C)CC1=CC=C(C=C1)[C@@H](C)C(=O)O"
+    complexity: 203
+    inchikey: "HEFNNWSXXWATRW-UHFFFAOYSA-N"
+    inchi: "InChI=1S/C13H18O2/c1-9(2)8-11-4-6-12(7-5-11)10(3)13(14)15/h4-7,9-10H,8H2,1-3H3,(H,14,15)"
+    vendor_count: 515
+    bioassay_count: 3443
+
+  - query_name: Paclitaxel
+    pubchem_cid: 36314
+    pubchem_name: "[(1S,2S,3R,4S,7R,9S,10S,12R,15S)-4,12-diacetyloxy-15-[(2R,3S)-3-benzamido-2-hydroxy-3-phenylpropanoyl]oxy-1,9-dihydroxy-10,14,17,17-tetramethyl-11-oxo-6-oxatetracyclo[11.3.1.0³,¹⁰.0⁴,⁷]heptadec-13-en-2-yl] benzoate"
+    smiles: "CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C"
+    complexity: 1790
+    inchikey: "RCINICONZNJXQF-MZXODVADSA-N"
+    inchi: "InChI=1S/C47H51NO14/c1-25-31(60-43(56)36(52)35(28-16-10-7-11-17-28)48-41(54)29-18-12-8-13-19-29)23-47(57)40(61-42(55)30-20-14-9-15-21-30)38-45(6,32(51)22-33-46(38,24-58-33)62-27(3)50)39(53)37(59-26(2)49)34(25)44(47,4,5)/h7-21,31-33,35-38,40,51-52,57H,22-24H2,1-6H3,(H,48,54)/t31-,32-,33+,35-,36+,37+,38-,40-,45+,46-,47+/m0/s1"
+    vendor_count: 473
+    bioassay_count: 8544
+
+  - query_name: Etoricoxib
+    pubchem_cid: 123619
+    pubchem_name: "5-chloro-2-(6-methyl-3-pyridinyl)-3-(4-methylsulfonylphenyl)pyridine"
+    smiles: "CC1=NC=C(C=C1)C2=C(C=C(C=N2)Cl)C3=CC=C(C=C3)S(=O)(=O)C"
+    complexity: 514
+    inchikey: "MNJVRJDLRVPLFE-UHFFFAOYSA-N"
+    inchi: "InChI=1S/C18H15ClN2O2S/c1-12-3-4-14(10-20-12)18-17(9-15(19)11-21-18)13-5-7-16(8-6-13)24(2,22)23/h3-11H,1-2H3"
+    vendor_count: 283
+    bioassay_count: 676
+
+  - query_name: Camlipixant
+    pubchem_cid: 76955630
+    pubchem_name: "methyl (2S)-2-[[2-[2,6-difluoro-4-(methylcarbamoyl)phenyl]-7-methylimidazo[1,2-a]pyridin-3-yl]methyl]morpholine-4-carboxylate"
+    smiles: "CC1=CC2=NC(=C(N2C=C1)C[C@H]3CN(CCO3)C(=O)OC)C4=C(C=C(C=C4F)C(=O)NC)F"
+    complexity: 704
+    inchikey: "SEHLMRJSQFAPCJ-HNNXBMFYSA-N"
+    inchi: "InChI=1S/C23H24F2N4O4/c1-13-4-5-29-18(11-15-12-28(6-7-33-15)23(31)32-3)21(27-19(29)8-13)20-16(24)9-14(10-17(20)25)22(30)26-2/h4-5,8-10,15H,6-7,11-12H2,1-3H3,(H,26,30)/t15-/m0/s1"
+    vendor_count: 44
+    bioassay_count: 1
+
+  - query_name: Fluorinated_Imidazole
+    pubchem_cid: 84117446
+    pubchem_name: "5-(2-fluorophenyl)-1-methylimidazole-4-carbonitrile"
+    smiles: "CN1C=NC(=C1C2=CC=CC=C2F)C#N"
+    complexity: 272
+    inchikey: "SJDQWONQSQCMKS-UHFFFAOYSA-N"
+    inchi: "InChI=1S/C11H8FN3/c1-15-7-14-10(6-13)11(15)8-4-2-3-5-9(8)12/h2-5,7H,1H3"
+    vendor_count: 1
+    bioassay_count: 0
+    # Matches the SMILES used in the evaluation report.
+
+  - query_name: Fluorinated_Imidazole
+    pubchem_cid: 56842878
+    pubchem_name: "(2S)-N-[(2S)-1-[(2S)-2-carbamoylpyrrolidin-1-yl]-3-(4-fluoro-1H-imidazol-5-yl)-1-oxopropan-2-yl]-5-oxopyrrolidine-2-carboxamide"
+    smiles: "C1C[C@H](N(C1)C(=O)[C@H](CC2=C(N=CN2)F)NC(=O)[C@@H]3CCC(=O)N3)C(=O)N"
+    complexity: 632
+    inchikey: "VECOTGLMMHXBFE-LSJOCFKGSA-N"
+    inchi: "InChI=1S/C16H21FN6O4/c17-13-9(19-7-20-13)6-10(22-15(26)8-3-4-12(24)21-8)16(27)23-5-1-2-11(23)14(18)25/h7-8,10-11H,1-6H2,(H2,18,25)(H,19,20)(H,21,24)(H,22,26)/t8-,10-,11-/m0/s1"
+    vendor_count: 9
+    bioassay_count: 0
+    # Alternative disambiguation: dipeptide containing a 4-fluoro-1H-imidazol-5-yl sidechain.
+
+  - query_name: Methoxy_Diphenylamine
+    pubchem_cid: 11435828
+    pubchem_name: "N-(4-methoxyphenyl)-4-methylaniline"
+    smiles: "CC1=CC=C(C=C1)NC2=CC=C(C=C2)OC"
+    complexity: 191
+    inchikey: "KIDXWDVZFZMXGM-UHFFFAOYSA-N"
+    inchi: "InChI=1S/C14H15NO/c1-11-3-5-12(6-4-11)15-13-7-9-14(16-2)10-8-13/h3-10,15H,1-2H3"
+    vendor_count: 100
+    bioassay_count: 0
+
+  - query_name: Tolyl_Pyridine
+    pubchem_cid: 603589
+    pubchem_name: "N-(4-methylphenyl)pyridin-3-amine"
+    smiles: "CC1=CC=C(C=C1)NC2=CN=CC=C2"
+    complexity: 162
+    inchikey: "VSMARCBHVFVKKN-UHFFFAOYSA-N"
+    inchi: "InChI=1S/C12H12N2/c1-10-4-6-11(7-5-10)14-12-3-2-8-13-9-12/h2-9,14H,1H3"
+    vendor_count: 32
+    bioassay_count: 0
+
+  - query_name: Orforglipron
+    pubchem_cid: 137319706
+    pubchem_name: "3-[(1S,2S)-1-[5-[(4S)-2,2-dimethyloxan-4-yl]-2-[(4S)-2-(4-fluoro-3,5-dimethylphenyl)-3-[3-(4-fluoro-1-methylindazol-5-yl)-2-oxoimidazol-1-yl]-4-methyl-6,7-dihydro-4H-pyrazolo[4,3-c]pyridine-5-carbonyl]indol-1-yl]-2-methylcyclopropyl]-4H-1,2,4-oxadiazol-5-one"
+    smiles: "C[C@H]1C[C@]1(C2=NOC(=O)N2)N3C4=C(C=C(C=C4)[C@H]5CCOC(C5)(C)C)C=C3C(=O)N6CCC7=NN(C(=C7[C@@H]6C)N8C=CN(C8=O)C9=C(C1=C(C=C9)N(N=C1)C)F)C1=CC(=C(C(=C1)C)F)C"
+    complexity: 1950
+    inchikey: "USUWIEBBBWHKNI-KHIFEHGGSA-N"
+    inchi: "InChI=1S/C48H48F2N10O5/c1-25-18-32(19-26(2)40(25)49)60-42(58-16-15-57(46(58)63)37-11-10-36-33(41(37)50)24-51-55(36)7)39-28(4)56(14-12-34(39)53-60)43(61)38-21-31-20-29(30-13-17-64-47(5,6)23-30)8-9-35(31)59(38)48(22-27(48)3)44-52-45(62)65-54-44/h8-11,15-16,18-21,24,27-28,30H,12-14,17,22-23H2,1-7H3,(H,52,54,62)/t27-,28-,30-,48-/m0/s1"
+    vendor_count: 60
+    bioassay_count: 7
+
+  - query_name: Acalabrutinib
+    pubchem_cid: 71226662
+    pubchem_name: "4-[8-amino-3-[(2S)-1-but-2-ynoylpyrrolidin-2-yl]imidazo[1,5-a]pyrazin-1-yl]-N-pyridin-2-ylbenzamide"
+    smiles: "CC#CC(=O)N1CCC[C@H]1C2=NC(=C3N2C=CN=C3N)C4=CC=C(C=C4)C(=O)NC5=CC=CC=N5"
+    complexity: 845
+    inchikey: "WDENQIQQYWYTPO-IBGZPJMESA-N"
+    inchi: "InChI=1S/C26H23N7O2/c1-2-6-21(34)32-15-5-7-19(32)25-31-22(23-24(27)29-14-16-33(23)25)17-9-11-18(12-10-17)26(35)30-20-8-3-4-13-28-20/h3-4,8-14,16,19H,5,7,15H2,1H3,(H2,27,29)(H,28,30,35)/t19-/m0/s1"
+    vendor_count: 121
+    bioassay_count: 1000

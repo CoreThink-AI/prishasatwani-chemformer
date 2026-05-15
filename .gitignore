@@ -1,3 +1,4 @@
+.env
 src/molbart/bigdata
 src/molbart/bigmodels
 .pytest_cache

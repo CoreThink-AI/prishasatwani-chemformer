@@ -20,6 +20,12 @@
 | Camlipixant | 458 | −3.97 | Partial | Partially |
 | Paclitaxel (Taxol) | 854 | −7.93 | Partial | Partially |
 | Orforglipron | 881 | −24.1 | Partial | No |
+| Acalabrutinib | 632 | -0.95 | Partial | Yes |
+
+### Testset of drug molecules
+- Acalabrutinib -> [CID 71226662](https://pubchem.ncbi.nlm.nih.gov/compound/71226662): CC#CC(=O)N1CCC[C@H]1C2=NC(=C3N2C=CN=C3N)C4=CC=C(C=C4)C(=O)NC5=CC=CC=N5 -> "CC#CC(=O)O + pyrrolidine-substituted imidazopyrazine core"
+- Fluorinated_Imidazole -> [5-fluoroimidazole](https://pubchem.ncbi.nlm.nih.gov/compound/56842878)
+
 
 The model performs well on small, drug-like molecules within common synthetic reaction classes (MW < 400 Da, Buchwald-Hartwig aminations, ester hydrolyses, dehydrations). Performance degrades gracefully as molecular complexity increases. A log-likelihood threshold of approximately −2 separates high-confidence correct predictions from partial or incorrect ones.
 
@@ -189,6 +195,13 @@ Beam 5 (ll=-5.978): CN.COC(=O)N1CCO[C@@H](CC2=C3N=C4C=C(C)C=CN4C(=C3C(F)=CC(C(=O
 ---
 
 ## Fluorinated_Imidazole
+
+### Disambiguation:
+- [5-fluoroimidazole CID_56842878](https://pubchem.ncbi.nlm.nih.gov/compound/56842878) "Thyrotropin releasing hormone 5-fluoroimidazole
+": 2 vendors, hormone
+- 5-Fluorobenzimidazole CID_235698: 65 vendors, no bioassays
+- 2-Fluoroimidazole CID_559542: 38 vendors, few bioassays
+- 4-Fluoroimidazole CID_99297: 66 vendors, no bioassays
 
 **SMILES:** `N#CC1=C(C2=CC=CC=C2F)N(C)C=N1`
 **MW:** 201.20 Da — fluorophenyl imidazole-4-carbonitrile (synthetic intermediate)
