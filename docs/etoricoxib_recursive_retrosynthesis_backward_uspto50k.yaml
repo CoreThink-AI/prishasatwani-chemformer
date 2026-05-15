@@ -1,0 +1,77 @@
+query_smiles: CC1=NC=C(C=C1)C2=C(C=C(C=N2)Cl)C3=CC=C(C=C3)S(=O)(=O)C
+tree:
+  smiles: CC1=NC=C(C=C1)C2=C(C=C(C=N2)Cl)C3=CC=C(C=C3)S(=O)(=O)C
+  depth: 0
+  status: expanded
+  reactions:
+  - log_likelihood: -2.7845
+    reaction_smarts: CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1.ClC(Cl)(Cl)Cl>>CC1=NC=C(C=C1)C2=C(C=C(C=N2)Cl)C3=CC=C(C=C3)S(=O)(=O)C
+    reactants:
+    - smiles: CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1
+      depth: 1
+      status: expanded
+      reactions:
+      - log_likelihood: -2.4929
+        reaction_smarts: CC1=NC=C2C=CC(Cl)=CC2=C1.CS(=O)(=O)C1=CC=C2C=CC(Cl)=CC2=C1>>CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1
+        reactants:
+        - smiles: CC1=NC=C2C=CC(Cl)=CC2=C1
+          depth: 2
+          status: leaf
+          estimated_mw: 169.5
+        - smiles: CS(=O)(=O)C1=CC=C2C=CC(Cl)=CC2=C1
+          depth: 2
+          status: leaf
+          estimated_mw: 231.5
+      - log_likelihood: -2.7635
+        reaction_smarts: CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1.OO>>CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1
+        reactants:
+        - smiles: CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1
+          depth: 2
+          status: already_expanded
+        - smiles: OO
+          depth: 2
+          status: leaf
+          estimated_mw: 32.0
+      - log_likelihood: -3.3455
+        reaction_smarts: CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1>>CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1
+        reactants:
+        - smiles: CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1
+          depth: 2
+          status: already_expanded
+      - log_likelihood: -3.6234
+        reaction_smarts: CS(=O)(=O)C1=CC=C2C=CC(Cl)=CC2=C1.CC1=NC=CC=C1>>CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1
+        reactants:
+        - smiles: CS(=O)(=O)C1=CC=C2C=CC(Cl)=CC2=C1
+          depth: 2
+          status: leaf
+          estimated_mw: 231.5
+        - smiles: CC1=NC=CC=C1
+          depth: 2
+          status: leaf
+          estimated_mw: 86.0
+      - log_likelihood: -3.8869
+        reaction_smarts: CC1=NC=C2C=CC(Cl)=CC2=C1.CS(=O)(=O)C1=CC=C2C=CC=C2C1=O>>CC1=NC=C2C=CC(Cl)=CC3=CC(S(C)(=O)=O)=CC=C3C2=C1
+        reactants:
+        - smiles: CC1=NC=C2C=CC(Cl)=CC2=C1
+          depth: 2
+          status: leaf
+          estimated_mw: 169.5
+        - smiles: CS(=O)(=O)C1=CC=C2C=CC=C2C1=O
+          depth: 2
+          status: leaf
+          estimated_mw: 200.0
+    - smiles: ClC(Cl)(Cl)Cl
+      depth: 1
+      status: leaf
+      estimated_mw: 154.0
+  - log_likelihood: -4.3428
+    reaction_smarts: CC1=NC=C2C=CC=C(S(C)(=O)=O)C=CC2=C1.ClC1=CC(Cl)=NC1>>CC1=NC=C(C=C1)C2=C(C=C(C=N2)Cl)C3=CC=C(C=C3)S(=O)(=O)C
+    reactants:
+    - smiles: CC1=NC=C2C=CC=C(S(C)(=O)=O)C=CC2=C1
+      depth: 1
+      status: leaf
+      estimated_mw: 234.0
+    - smiles: ClC1=CC(Cl)=NC1
+      depth: 1
+      status: leaf
+      estimated_mw: 133.0
