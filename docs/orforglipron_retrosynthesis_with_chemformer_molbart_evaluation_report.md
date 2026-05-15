@@ -22,10 +22,11 @@
 | Orforglipron | 881 | −24.1 | Partial | No |
 | Acalabrutinib | 632 | -0.95 | Partial | Yes |
 
+<NOTE>
 ### Testset of drug molecules
 - Acalabrutinib -> [CID 71226662](https://pubchem.ncbi.nlm.nih.gov/compound/71226662): CC#CC(=O)N1CCC[C@H]1C2=NC(=C3N2C=CN=C3N)C4=CC=C(C=C4)C(=O)NC5=CC=CC=N5 -> "CC#CC(=O)O + pyrrolidine-substituted imidazopyrazine core"
 - Fluorinated_Imidazole -> [5-fluoroimidazole](https://pubchem.ncbi.nlm.nih.gov/compound/56842878)
-
+</NOTE>
 
 The model performs well on small, drug-like molecules within common synthetic reaction classes (MW < 400 Da, Buchwald-Hartwig aminations, ester hydrolyses, dehydrations). Performance degrades gracefully as molecular complexity increases. A log-likelihood threshold of approximately −2 separates high-confidence correct predictions from partial or incorrect ones.
 
@@ -76,7 +77,7 @@ Beam 5 (ll=-6.421): c1ccc(O)c(C(=O)O)c1.ClC(C)=O
 - **Reactant 1:** `CC(=O)Cl` — acetyl chloride
 - **Reactant 2:** `O=C(O)c1ccccc1O` — salicylic acid
 
-This is the exact industrially used synthesis. Beams 2–5 are canonically equivalent representations of the same two reactants. The high confidence (log-likelihood −0.74) reflects that this reaction class appears frequently in USPTO-50K.
+This is the exact industrially used synthesis. <NOTE>Chlorine SMILES are different than the salycylic acid reaction SMILES mentioned in PubChem manufacturing section</NOTE> Beams 2–5 are canonically equivalent representations of the same two reactants. The high confidence (log-likelihood −0.74) reflects that this reaction class appears frequently in USPTO-50K.
 
 ---
 
