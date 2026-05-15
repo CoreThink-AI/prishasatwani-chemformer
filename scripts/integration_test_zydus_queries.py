@@ -32,6 +32,8 @@ from typing import Optional
 
 import requests
 import yaml
+from rdkit import Chem
+from rdkit.Chem import Descriptors
 
 API_URL = "https://chemformer-retrosynthesis-knq67derjq-uc.a.run.app"
 QUERIES_FILE = Path("scripts/zydus_queries.yaml")
@@ -44,21 +46,24 @@ PUBCHEM_PROPERTIES = "IUPACName,MolecularFormula,MolecularWeight,IsomericSMILES,
 DEFAULT_MODEL = "backward_uspto50k"
 
 
-# ── molecular weight estimate (no rdkit dependency) ──────────────────────────
+# ── RDKit helpers ────────────────────────────────────────────────────────────
 
-_ATOMIC_WEIGHTS = {
-    "C": 12, "N": 14, "O": 16, "S": 32, "F": 19, "Cl": 35.5,
-    "Br": 80, "I": 127, "P": 31, "B": 11, "H": 1, "Si": 28,
-}
+def mol_from_smiles(smiles: str) -> Optional[Chem.Mol]:
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        print(f"  [RDKit: could not parse SMILES: {smiles[:60]}]", file=sys.stderr)
+    return mol
 
 
-def _estimate_mw(smiles: str) -> float:
-    import re
-    mw = 0.0
-    for sym, w in sorted(_ATOMIC_WEIGHTS.items(), key=lambda x: -len(x[0])):
-        count = len(re.findall(r'(?<!\[)' + sym + r'(?![]a-z])', smiles))
-        mw += count * w
-    return mw
+def canonical_smiles(smiles: str) -> str:
+    """Return RDKit canonical SMILES, or the original if parsing fails."""
+    mol = mol_from_smiles(smiles)
+    return Chem.MolToSmiles(mol) if mol else smiles
+
+
+def mol_weight(smiles: str) -> float:
+    mol = mol_from_smiles(smiles)
+    return Descriptors.MolWt(mol) if mol else float("inf")
 
 
 # ── Chemformer API ────────────────────────────────────────────────────────────
@@ -79,7 +84,7 @@ def _predict(smiles: str, model: str, n_beams: int, url: str) -> list:
 
 
 def _is_leaf(smiles: str, max_mw: float) -> bool:
-    return _estimate_mw(smiles) <= max_mw
+    return mol_weight(smiles) <= max_mw
 
 
 def _split_reactants(dot_smiles: str) -> list:
@@ -89,6 +94,7 @@ def _split_reactants(dot_smiles: str) -> list:
 # ── recursive tree expansion ──────────────────────────────────────────────────
 
 def expand(smiles, depth, max_depth, min_ll, max_mw, n_beams, model, url, visited):
+    smiles = canonical_smiles(smiles)
     node = {"smiles": smiles, "depth": depth}
 
     if smiles in visited:
@@ -98,7 +104,7 @@ def expand(smiles, depth, max_depth, min_ll, max_mw, n_beams, model, url, visite
     # Only treat sub-fragments (depth > 0) as leaves — never the query molecule itself.
     if depth > 0 and _is_leaf(smiles, max_mw):
         node["status"] = "leaf"
-        node["estimated_mw"] = round(_estimate_mw(smiles), 1)
+        node["mol_weight"] = round(mol_weight(smiles), 2)
         return node
 
     if depth >= max_depth:
