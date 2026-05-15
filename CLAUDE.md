@@ -32,6 +32,11 @@ PYTHONPATH=src python src/molbart/inference_score.py
 CHEMFORMER_MODEL=<path>.ckpt CHEMFORMER_VOCAB=src/molbart/bigmodels/bart_vocab.json \
     uvicorn chemformer.service.retrosynthesis_service:app --port 8080
 
+# Test a named model checkpoint (no redeploy needed):
+#   POST /retrosynthesis/{model_name}/predict  loads {CHEMFORMER_MODEL_DIR}/{model_name}.ckpt lazily
+#   GET  /models  lists default model, model dir, and currently cached model names
+# e.g. curl .../retrosynthesis/backward_uspto50k/predict  vs  .../retrosynthesis/uspto_50_last_v2/predict
+
 # Get latent embeddings for a single molecule
 PYTHONPATH=src python -m molbart.latent_embeddings_single
 ```
