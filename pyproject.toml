@@ -12,12 +12,6 @@ authors = [
     {name = "Genheden, Samuel", email="samuel.genheden@astrazeneca.com"},
     ]
 license = "Apache-2.0"
-packages = [
-    { include = "chemformer" },
-    { include = "molbart" },
-    { include = "pysmilesutils" },
-    { include = "hydra" },
-]
 
 dependencies = [
     # dotenv added by Hobson 2026
@@ -72,6 +66,9 @@ data = [
 [build-system]
 requires = ["uv_build>=0.11.0"]
 build-backend = "uv_build"
+
+[tool.uv_build]
+source-dir = "src"
 
 [tool.black]
 line-length = 120

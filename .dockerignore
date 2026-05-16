@@ -2,7 +2,7 @@
 src/molbart/bigmodels/
 src/molbart/bigdata/
 src/chemformer/data/
-data/
+/data/
 *.tsv
 
 # Python artifacts
