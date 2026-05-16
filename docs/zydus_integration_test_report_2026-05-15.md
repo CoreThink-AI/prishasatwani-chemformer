@@ -2,8 +2,8 @@
 
 **Date:** 2026-05-15  
 **Model:** `backward_uspto50k` (Chemformer BART, fine-tuned on USPTO-50K)  
-**Service:** `https://chemformer-retrosynthesis-knq67derjq-uc.a.run.app`  
-**Parameters:** n_beams=10, max_depth=3, min_ll=−5.0, max_mw=300 Da, max_pathways=4  
+**Service:** [`https://chemformer-retrosynthesis-knq67derjq-uc.a.run.app`](https://chemformer-retrosynthesis-knq67derjq-uc.a.run.app)  
+**Parameters:** `n_beams=10, max_depth=3, min_ll=−5.0, max_mw=300 Da, max_pathways=4`  
 **Output:** [`src/chemformer/data/zydus_queries_chemformer_recursive_db5e90.yaml`](/src/chemformer/data/zydus_queries_chemformer_recursive_db5e90.yaml)
 
 ---
