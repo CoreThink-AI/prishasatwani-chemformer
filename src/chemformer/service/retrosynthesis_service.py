@@ -1,4 +1,4 @@
-"""FastAPI service for single-step retrosynthesis using Chemformer.
+"""FastAPI service for single-step retrosynthesis and molecular embeddings using Chemformer.
 
 Environment variables:
     CHEMFORMER_MODEL     - default model: local path or gs:// URI to .ckpt file
@@ -12,6 +12,10 @@ Environment variables:
 Endpoints:
     POST /retrosynthesis/predict                    - uses default model (CHEMFORMER_MODEL)
     POST /retrosynthesis/{model_name}/predict       - lazy-loads {MODEL_DIR}/{model_name}.ckpt
+    POST /embed/molecule                            - embed one or more molecule SMILES
+    POST /embed/molecule/{model_name}               - embed using a named checkpoint
+    POST /embed/reaction                            - embed one or more reaction SMARTS
+    POST /embed/reaction/{model_name}               - embed using a named checkpoint
 
 Run locally:
     CHEMFORMER_MODEL=... CHEMFORMER_VOCAB=... uvicorn \\
@@ -21,13 +25,15 @@ Run locally:
 import os
 import tempfile
 from pathlib import PurePosixPath
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
 
 import omegaconf as oc
+import torch
 import molbart.utils.data_utils as util
 from fastapi import FastAPI, HTTPException
 from molbart.constants import CONFIG_DIR
 from molbart.data import SynthesisDataModule
+from molbart.data.util import BatchEncoder
 from molbart.models import Chemformer
 from pydantic import BaseModel, Field
 
@@ -170,6 +176,136 @@ class RetrosynthesisResponse(BaseModel):
     )
 
 
+class EmbedMoleculeRequest(BaseModel):
+    smiles: Union[str, List[str]] = Field(
+        ...,
+        description="One molecule SMILES or a list of SMILES to embed.",
+        examples=["CC(=O)Oc1ccccc1C(=O)O"],
+    )
+    pooling: str = Field(
+        default="mean",
+        description=(
+            "How to pool token-level encoder outputs into a single vector per molecule. "
+            "`mean` averages over non-padding tokens (recommended for similarity/clustering); "
+            "`first` returns the first (begin-of-sequence) token only."
+        ),
+    )
+
+
+class EmbedReactionRequest(BaseModel):
+    reaction_smarts: Union[str, List[str]] = Field(
+        ...,
+        description=(
+            "One reaction SMARTS string or a list of them, in the format "
+            "`reactants>>product`. The `>>` separator is required."
+        ),
+        examples=["CC(=O)Cl.O=C(O)c1ccccc1O>>CC(=O)Oc1ccccc1C(=O)O"],
+    )
+    encode_side: str = Field(
+        default="reactants",
+        description=(
+            "Which side of the reaction to encode: `reactants` (left of `>>`) "
+            "or `product` (right of `>>`). "
+            "Use `reactants` for forward-synthesis context; `product` for retrosynthesis context."
+        ),
+    )
+    pooling: str = Field(
+        default="mean",
+        description="Pooling strategy: `mean` (recommended) or `first`.",
+    )
+
+
+class EmbeddingResponse(BaseModel):
+    model_name: str = Field(description="Checkpoint used for encoding.")
+    pooling: str = Field(description="Pooling strategy applied.")
+    d_model: int = Field(description="Embedding dimensionality (512 for BART-small).")
+    n_inputs: int = Field(description="Number of inputs embedded.")
+    embeddings: List[List[float]] = Field(
+        description=(
+            "Embeddings as a list of vectors, one per input. "
+            "Shape: [n_inputs, d_model]."
+        )
+    )
+
+
+# ── shared embedding logic ────────────────────────────────────────────────────
+
+def _run_embed(smiles_list: List[str], model_name: str, pooling: str) -> EmbeddingResponse:
+    """Encode a list of SMILES through the Chemformer encoder and pool the result."""
+    if pooling not in ("mean", "first"):
+        raise HTTPException(status_code=422, detail=f"Unknown pooling '{pooling}'. Use 'mean' or 'first'.")
+
+    try:
+        chemformer = _load_model(model_name)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=f"Could not load model '{model_name}': {exc}")
+
+    encoder = BatchEncoder(
+        tokenizer=chemformer.tokenizer,
+        masker=None,
+        max_seq_len=util.DEFAULT_MAX_SEQ_LEN,
+    )
+
+    # encoder_ids, encoder_mask: [n_tokens, batch_size]
+    encoder_ids, encoder_mask = encoder(smiles_list, mask=False, add_sep_token=False)
+    encoder_ids = encoder_ids.to(chemformer.device)
+    encoder_mask = encoder_mask.to(chemformer.device)
+
+    with torch.no_grad():
+        # memory: [n_tokens, batch_size, d_model]
+        memory = chemformer.model.encode(
+            {"encoder_input": encoder_ids, "encoder_pad_mask": encoder_mask}
+        )
+        # Reshape to [batch_size, n_tokens, d_model]
+        memory = memory.permute(1, 0, 2)
+
+    d_model = memory.shape[2]
+
+    if pooling == "mean":
+        # Average over non-padding positions; encoder_mask True = padding
+        valid = (~encoder_mask.permute(1, 0)).float().unsqueeze(-1)  # [batch, n_tokens, 1]
+        pooled = (memory * valid).sum(dim=1) / valid.sum(dim=1).clamp(min=1)  # [batch, d_model]
+        embeddings = pooled.cpu().tolist()
+    else:  # "first"
+        embeddings = memory[:, 0, :].cpu().tolist()
+
+    return EmbeddingResponse(
+        model_name=model_name,
+        pooling=pooling,
+        d_model=d_model,
+        n_inputs=len(smiles_list),
+        embeddings=embeddings,
+    )
+
+
+def _run_embed_reaction(
+    smarts_list: List[str],
+    model_name: str,
+    encode_side: str,
+    pooling: str,
+) -> EmbeddingResponse:
+    """Split reaction SMARTS on '>>' and embed the chosen side."""
+    if encode_side not in ("reactants", "product"):
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unknown encode_side '{encode_side}'. Use 'reactants' or 'product'.",
+        )
+
+    parsed = []
+    for rxn in smarts_list:
+        parts = rxn.split(">>")
+        if len(parts) != 2:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Reaction must contain exactly one '>>' separator: {rxn[:80]}",
+            )
+        parsed.append(parts[0].strip() if encode_side == "reactants" else parts[1].strip())
+
+    result = _run_embed(parsed, model_name, pooling)
+    result.pooling = f"{pooling} ({encode_side})"
+    return result
+
+
 # ── shared prediction logic ───────────────────────────────────────────────────
 
 def _run_predict(request: RetrosynthesisRequest, model_name: str) -> RetrosynthesisResponse:
@@ -240,6 +376,77 @@ def predict_named(model_name: str, request: RetrosynthesisRequest):
     Models are lazy-loaded on first request and cached in memory.
     """
     return _run_predict(request, model_name)
+
+
+@app.post(
+    "/embed/molecule",
+    response_model=EmbeddingResponse,
+    summary="Embed molecule SMILES (default model)",
+    response_description="Mean-pooled encoder embeddings, one vector per input SMILES.",
+)
+def embed_molecule_default(request: EmbedMoleculeRequest):
+    """Encode one or more molecule SMILES through the Chemformer encoder.
+
+    Returns a fixed-size embedding vector per molecule (shape `[d_model]`).
+    Mean pooling over non-padding tokens is the default and recommended setting
+    for downstream tasks such as similarity search or clustering.
+    """
+    smiles_list = [request.smiles] if isinstance(request.smiles, str) else request.smiles
+    return _run_embed(smiles_list, _DEFAULT_MODEL_NAME, request.pooling)
+
+
+@app.post(
+    "/embed/molecule/{model_name}",
+    response_model=EmbeddingResponse,
+    summary="Embed molecule SMILES (named model)",
+    response_description="Mean-pooled encoder embeddings, one vector per input SMILES.",
+)
+def embed_molecule_named(model_name: str, request: EmbedMoleculeRequest):
+    """Encode using a named checkpoint from `CHEMFORMER_MODEL_DIR`.
+
+    `model_name` is the checkpoint filename stem (without `.ckpt`).
+    Models are lazy-loaded on first request and cached in memory.
+    """
+    smiles_list = [request.smiles] if isinstance(request.smiles, str) else request.smiles
+    return _run_embed(smiles_list, model_name, request.pooling)
+
+
+@app.post(
+    "/embed/reaction",
+    response_model=EmbeddingResponse,
+    summary="Embed reaction SMARTS (default model)",
+    response_description="Mean-pooled encoder embeddings, one vector per reaction.",
+)
+def embed_reaction_default(request: EmbedReactionRequest):
+    """Encode one or more reactions through the Chemformer encoder.
+
+    Each reaction must be supplied as `reactants>>product` SMARTS notation.
+    The `encode_side` field selects which half is passed to the encoder:
+    - `reactants` (default): encodes the left-hand side — useful for forward-synthesis context.
+    - `product`: encodes the right-hand side — useful for retrosynthesis context.
+    """
+    smarts_list = (
+        [request.reaction_smarts]
+        if isinstance(request.reaction_smarts, str)
+        else request.reaction_smarts
+    )
+    return _run_embed_reaction(smarts_list, _DEFAULT_MODEL_NAME, request.encode_side, request.pooling)
+
+
+@app.post(
+    "/embed/reaction/{model_name}",
+    response_model=EmbeddingResponse,
+    summary="Embed reaction SMARTS (named model)",
+    response_description="Mean-pooled encoder embeddings, one vector per reaction.",
+)
+def embed_reaction_named(model_name: str, request: EmbedReactionRequest):
+    """Encode reactions using a named checkpoint from `CHEMFORMER_MODEL_DIR`."""
+    smarts_list = (
+        [request.reaction_smarts]
+        if isinstance(request.reaction_smarts, str)
+        else request.reaction_smarts
+    )
+    return _run_embed_reaction(smarts_list, model_name, request.encode_side, request.pooling)
 
 
 @app.get("/models", summary="List loaded models")
