@@ -1,0 +1,12 @@
+{
+  "cid": 6586,
+  "MolecularFormula": "C2H3ClO2",
+  "MolecularWeight": "94.50",
+  "SMILES": "COC(=O)Cl",
+  "InChIKey": "XMJHPCRAQCTCFT-UHFFFAOYSA-N",
+  "IUPACName": "methyl carbonochloridate",
+  "XLogP": 1.2,
+  "Complexity": 42,
+  "vendor_count": 146,
+  "bioassay_count": 297
+}
