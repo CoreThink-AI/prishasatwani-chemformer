@@ -5,7 +5,7 @@
 # Large model and data files — not needed in build context
 src/molbart/bigmodels/
 src/molbart/bigdata/
-data/
+/data/
 
 # Python artifacts
 **/__pycache__/
