@@ -482,7 +482,7 @@ def _run_synthesis(request: SynthesisRequest, model_name: str) -> SynthesisRespo
             smiles_batch, log_lhs_batch = chemformer.model.sample_molecules(
                 batch, sampling_alg="beam", limit=limit,
             )
-        if sampler.sample_unique:
+        if getattr(sampler, "sample_unique", False):
             smiles_batch = sampler.smiles_unique
             log_lhs_batch = sampler.log_lhs_unique
 
@@ -493,7 +493,7 @@ def _run_synthesis(request: SynthesisRequest, model_name: str) -> SynthesisRespo
         limit = min(limit * 2, _BEAM_LIMIT_MAX)
         print(f"Retrying synthesis beam search with limit={limit} ({n_valid}/{n_beams} valid)")
 
-    if not smiles_batch:
+    if not len(smiles_batch) or not len(smiles_batch[0]):
         raise HTTPException(status_code=500, detail="Model returned no predictions.")
 
     predictions = [
@@ -562,7 +562,7 @@ def _run_predict(request: RetrosynthesisRequest, model_name: str) -> Retrosynthe
             smiles_batch, log_lhs_batch = chemformer.model.sample_molecules(
                 batch, sampling_alg="beam", limit=limit,
             )
-        if sampler.sample_unique:
+        if getattr(sampler, "sample_unique", False):
             smiles_batch = sampler.smiles_unique
             log_lhs_batch = sampler.log_lhs_unique
 
@@ -574,10 +574,7 @@ def _run_predict(request: RetrosynthesisRequest, model_name: str) -> Retrosynthe
         limit = min(limit * 2, _BEAM_LIMIT_MAX)
         print(f"Retrying beam search with limit={limit} ({n_valid}/{n_beams} valid on previous run)")
 
-    sampled_smiles = [smiles_batch]
-    log_lhs = [log_lhs_batch]
-
-    if not sampled_smiles:
+    if not len(smiles_batch) or not len(smiles_batch[0]):
         raise HTTPException(status_code=500, detail="Model returned no predictions.")
 
     predictions = [
@@ -586,7 +583,7 @@ def _run_predict(request: RetrosynthesisRequest, model_name: str) -> Retrosynthe
             reactants_smiles=str(reactants),
             log_likelihood=float(lh),
         )
-        for reactants, lh in zip(sampled_smiles[0], log_lhs[0])
+        for reactants, lh in zip(smiles_batch[0], log_lhs_batch[0])
     ]
     return RetrosynthesisResponse(
         product_smiles=request.smiles,

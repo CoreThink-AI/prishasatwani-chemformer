@@ -218,12 +218,13 @@ class BARTModel(_AbsTransformerModel):
 
         return loss
 
-    def sample_molecules(self, batch_input, sampling_alg="greedy", return_tokenized=False):
+    def sample_molecules(self, batch_input, sampling_alg="greedy", return_tokenized=False, limit=256):
         """Sample molecules from the model
 
         Args:
             batch_input (dict): Input given to model
             sampling_alg (str): Algorithm to use to sample SMILES strings from model
+            limit (int): Maximum autoregressive decoding steps (passed to BeamSearchSampler; ignored by DecodeSampler)
 
         Returns:
             ([[str]], [[float]]): Tuple of molecule SMILES strings and log lhs (outer dimension is batch)
@@ -239,6 +240,7 @@ class BARTModel(_AbsTransformerModel):
                 self.num_beams,
                 sampling_alg,
                 return_tokenized=return_tokenized,
+                limit=limit,
             )
         else:
             enc_input = batch_input["encoder_input"]
