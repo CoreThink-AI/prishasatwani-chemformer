@@ -1,0 +1,12 @@
+{
+  "cid": 344299,
+  "MolecularFormula": "C13H13NO",
+  "MolecularWeight": "199.25",
+  "SMILES": "CC1=CC=C(C=C1)NC2=CC=C(C=C2)O",
+  "InChIKey": "PJCNSVHWHHVSMK-UHFFFAOYSA-N",
+  "IUPACName": "4-(4-methylanilino)phenol",
+  "XLogP": 3.5,
+  "Complexity": 179,
+  "vendor_count": 47,
+  "bioassay_count": 6
+}

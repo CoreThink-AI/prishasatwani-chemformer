@@ -1,0 +1,12 @@
+{
+  "cid": 712,
+  "MolecularFormula": "CH2O",
+  "MolecularWeight": "30.026",
+  "SMILES": "C=O",
+  "InChIKey": "WSFSSNUMVMOOMR-UHFFFAOYSA-N",
+  "IUPACName": "formaldehyde",
+  "XLogP": 1.2,
+  "Complexity": 2,
+  "vendor_count": 519,
+  "bioassay_count": 456
+}
