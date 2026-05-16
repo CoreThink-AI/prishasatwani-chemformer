@@ -1,0 +1,12 @@
+{
+  "cid": 20616787,
+  "MolecularFormula": "C10H8ClN",
+  "MolecularWeight": "177.63",
+  "SMILES": "CC1=CC2=C(C=CC(=C2)Cl)C=N1",
+  "InChIKey": "VLPNHJHAQSABQP-UHFFFAOYSA-N",
+  "IUPACName": "6-chloro-3-methylisoquinoline",
+  "XLogP": 3.3,
+  "Complexity": 160,
+  "vendor_count": 79,
+  "bioassay_count": 0
+}

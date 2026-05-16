@@ -1,0 +1,12 @@
+{
+  "cid": 68484,
+  "MolecularFormula": "C10H10O4",
+  "MolecularWeight": "194.18",
+  "SMILES": "CC(=O)OC1=CC=CC=C1C(=O)OC",
+  "InChIKey": "ONWPLBKWMAUFGZ-UHFFFAOYSA-N",
+  "IUPACName": "methyl 2-acetyloxybenzoate",
+  "XLogP": 1.5,
+  "Complexity": 224,
+  "vendor_count": 132,
+  "bioassay_count": 76
+}

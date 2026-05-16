@@ -1,0 +1,12 @@
+{
+  "cid": 7975,
+  "MolecularFormula": "C6H7N",
+  "MolecularWeight": "93.13",
+  "SMILES": "CC1=CC=CC=N1",
+  "InChIKey": "BSKHPKMHTQYZBB-UHFFFAOYSA-N",
+  "IUPACName": "2-methylpyridine",
+  "XLogP": 1.1,
+  "Complexity": 52,
+  "vendor_count": 231,
+  "bioassay_count": 506
+}

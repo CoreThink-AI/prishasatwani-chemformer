@@ -1,0 +1,12 @@
+{
+  "cid": 784,
+  "MolecularFormula": "H2O2",
+  "MolecularWeight": "34.015",
+  "SMILES": "OO",
+  "InChIKey": "MHAJPDPJQMAIIY-UHFFFAOYSA-N",
+  "IUPACName": "hydrogen peroxide",
+  "XLogP": -0.9,
+  "Complexity": 0,
+  "vendor_count": 473,
+  "bioassay_count": 113
+}
