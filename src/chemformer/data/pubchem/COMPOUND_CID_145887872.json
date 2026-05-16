@@ -10,7 +10,7 @@
         "Section": [
           {
             "TOCHeading": "2D Structure",
-            "Description": "A two-dimensional (2D) structure representation of the compound.  Because this structure is processed through chemical structure standardization (Hähnke et al., J. Cheminform. 2018, 10, 36), it is not necessarily the same as the structures provided by individual data contributors.  ",
+            "Description": "A two-dimensional (2D) structure representation of the compound.  Because this structure is processed through chemical structure standardization (H\u00e4hnke et al., J. Cheminform. 2018, 10, 36), it is not necessarily the same as the structures provided by individual data contributors.  ",
             "URL": "https://doi.org/10.1186/s13321-018-0293-8",
             "DisplayControls": {
               "MoveToTop": true
@@ -425,7 +425,7 @@
                       "Number": [
                         32.3
                       ],
-                      "Unit": "Å²"
+                      "Unit": "\u212b\u00b2"
                     }
                   }
                 ]
@@ -763,5 +763,9 @@
         "URL": "https://pubchem.ncbi.nlm.nih.gov"
       }
     ]
+  },
+  "_meta": {
+    "vendor_count": 4,
+    "bioassay_count": 0
   }
 }

@@ -251,9 +251,9 @@ def fetch_compound(cid: int) -> dict:
         blob = json.loads(cache_file.read_text())
         record = blob.get("Record", {})
         props = _extract_from_record(record, cid)
-        # vendor_count / bioassay_count are not in the full record; fall back to 0
-        props.setdefault("vendor_count", 0)
-        props.setdefault("bioassay_count", 0)
+        meta = blob.get("_meta", {})
+        props["vendor_count"] = meta.get("vendor_count", 0)
+        props["bioassay_count"] = meta.get("bioassay_count", 0)
         return props
 
     # Fetch full compound record
@@ -262,7 +262,6 @@ def fetch_compound(cid: int) -> dict:
         return {"cid": cid, "vendor_count": 0, "bioassay_count": 0}
 
     blob = r.json()
-    cache_file.write_text(json.dumps(blob, indent=2))
     record = blob.get("Record", {})
     props = _extract_from_record(record, cid)
 
@@ -274,6 +273,10 @@ def fetch_compound(cid: int) -> dict:
 
     rb = _pubchem_get(f"{PUBCHEM_BASE}/compound/cid/{cid}/assaysummary/JSON")
     props["bioassay_count"] = len(rb.json().get("Table", {}).get("Row", [])) if rb.ok else 0
+
+    # Store vendor/bioassay counts alongside the Record blob so cache reads are correct
+    blob["_meta"] = {"vendor_count": props["vendor_count"], "bioassay_count": props["bioassay_count"]}
+    cache_file.write_text(json.dumps(blob, indent=2))
 
     return props
 

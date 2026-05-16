@@ -653,5 +653,9 @@
         "tautomers": -1
       }
     }
-  ]
+  ],
+  "_meta": {
+    "vendor_count": 5,
+    "bioassay_count": 0
+  }
 }
