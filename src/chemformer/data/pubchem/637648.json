@@ -1,0 +1,12 @@
+{
+  "cid": 637648,
+  "MolecularFormula": "C13H13NO5",
+  "MolecularWeight": "263.25",
+  "SMILES": "C1CC(=O)N([C@@H]1C(=O)O)C(=O)OCC2=CC=CC=C2",
+  "InChIKey": "VHSFUGXCSGOKJX-JTQLQIEISA-N",
+  "IUPACName": "(2S)-5-oxo-1-phenylmethoxycarbonylpyrrolidine-2-carboxylic acid",
+  "XLogP": 1.1,
+  "Complexity": 375,
+  "vendor_count": 119,
+  "bioassay_count": 0
+}

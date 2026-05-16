@@ -1,0 +1,12 @@
+{
+  "cid": 444439,
+  "MolecularFormula": "C5H8N2O2",
+  "MolecularWeight": "128.13",
+  "SMILES": "C1CC(=O)N[C@@H]1C(=O)N",
+  "InChIKey": "WGOIHPRRFBCVBZ-VKHMYHEASA-N",
+  "IUPACName": "(2S)-5-oxopyrrolidine-2-carboxamide",
+  "XLogP": -1.4,
+  "Complexity": 155,
+  "vendor_count": 97,
+  "bioassay_count": 4
+}
