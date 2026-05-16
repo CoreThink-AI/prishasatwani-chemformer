@@ -12,6 +12,10 @@ Environment variables:
 Endpoints:
     POST /retrosynthesis/predict                    - uses default model (CHEMFORMER_MODEL)
     POST /retrosynthesis/{model_name}/predict       - lazy-loads {MODEL_DIR}/{model_name}.ckpt
+    POST /synthesis/predict                         - forward synthesis (default model)
+    POST /synthesis/{model_name}/predict            - forward synthesis (named model)
+    POST /synthesis/score                           - score reaction viability (default model)
+    POST /synthesis/{model_name}/score              - score reaction viability (named model)
     POST /embed/molecule                            - embed one or more molecule SMILES
     POST /embed/molecule/{model_name}               - embed using a named checkpoint
     POST /embed/reaction                            - embed one or more reaction SMARTS
@@ -182,6 +186,65 @@ class RetrosynthesisResponse(BaseModel):
     )
 
 
+class SynthesisRequest(BaseModel):
+    smiles: str = Field(
+        ...,
+        description=(
+            "Reactants SMILES (dot-separated) or reaction SMARTS `reactants>>`. "
+            "If `>>` is present only the left side is used as encoder input."
+        ),
+        examples=["CC(=O)Cl.O=C(O)c1ccccc1O"],
+    )
+    n_beams: int = Field(
+        default=_N_BEAMS,
+        ge=1,
+        le=50,
+        description="Number of beam-search hypotheses to return (1–50).",
+    )
+
+
+class SynthesisPrediction(BaseModel):
+    product_smiles: str = Field(description="Predicted product SMILES.")
+    log_likelihood: float = Field(description="Model log-likelihood (higher = more confident).")
+
+
+class SynthesisResponse(BaseModel):
+    reactants_smiles: str = Field(description="Input reactants SMILES, echoed back.")
+    model_name: str = Field(description="Checkpoint used.")
+    predictions: List[SynthesisPrediction] = Field(
+        description="Ranked list of predicted products, best first."
+    )
+
+
+class SynthesisScoreRequest(BaseModel):
+    reaction_smarts: Union[str, List[str]] = Field(
+        ...,
+        description=(
+            "One reaction SMARTS string or a list, in `reactants>>product` format. "
+            "The model scores how likely the product is given the reactants."
+        ),
+        examples=["CC(=O)Cl.O=C(O)c1ccccc1O>>CC(=O)Oc1ccccc1C(=O)O"],
+    )
+
+
+class SynthesisScoreResult(BaseModel):
+    reaction_smarts: str = Field(description="The scored reaction, echoed back.")
+    log_likelihood: float = Field(
+        description=(
+            "Mean per-token log-likelihood of the product sequence given the reactants "
+            "(teacher-forcing). Higher (less negative) = model considers the reaction more plausible."
+        )
+    )
+    n_product_tokens: int = Field(description="Number of product tokens scored (excludes padding).")
+
+
+class SynthesisScoreResponse(BaseModel):
+    model_name: str = Field(description="Checkpoint used.")
+    scores: List[SynthesisScoreResult] = Field(
+        description="One score entry per input reaction."
+    )
+
+
 class EmbedMoleculeRequest(BaseModel):
     smiles: Union[str, List[str]] = Field(
         ...,
@@ -310,6 +373,138 @@ def _run_embed_reaction(
     result = _run_embed(parsed, model_name, pooling)
     result.pooling = f"{pooling} ({encode_side})"
     return result
+
+
+# ── shared synthesis (forward) logic ─────────────────────────────────────────
+
+def _run_score_reactions(smarts_list: List[str], model_name: str) -> SynthesisScoreResponse:
+    """Score reactions via teacher-forced decoder: returns per-token mean log-likelihood."""
+    try:
+        chemformer = _load_model(model_name)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=f"Could not load model '{model_name}': {exc}")
+
+    encoder = BatchEncoder(
+        tokenizer=chemformer.tokenizer,
+        masker=None,
+        max_seq_len=util.DEFAULT_MAX_SEQ_LEN,
+    )
+    chemformer.model.to(chemformer.device)
+    chemformer.model.eval()
+
+    results = []
+    for smarts in smarts_list:
+        parts = smarts.split(">>")
+        if len(parts) != 2:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Reaction must contain exactly one '>>' separator: {smarts[:80]}",
+            )
+        reactants, product = parts[0].strip(), parts[1].strip()
+
+        enc_ids, enc_mask = encoder([reactants], mask=False, add_sep_token=False)
+        dec_ids, dec_mask = encoder([product], mask=False, add_sep_token=False)
+
+        enc_ids = enc_ids.to(chemformer.device)
+        enc_mask = enc_mask.to(chemformer.device)
+        dec_ids = dec_ids.to(chemformer.device)
+        dec_mask = dec_mask.to(chemformer.device)
+
+        # encode() returns [src_len, batch, d_model]
+        with torch.no_grad():
+            memory = chemformer.model.encode(
+                {"encoder_input": enc_ids, "encoder_pad_mask": enc_mask}
+            )
+            # decode_batch expects: decoder_input [batch, tgt_len], memory_input [batch, src, d_model]
+            token_log_probs = chemformer.model.decode_batch(
+                {
+                    "decoder_input": dec_ids.transpose(0, 1),          # [1, tgt_len]
+                    "memory_input": memory.permute(1, 0, 2),            # [1, src_len, d_model]
+                    "memory_pad_mask": enc_mask.transpose(0, 1),        # [1, src_len]
+                },
+                return_last=False,
+            )  # → [tgt_len, 1, vocab_size]
+
+        # Sum log P(token[i+1] | tokens[:i+1]) for non-padding positions
+        tgt_len = dec_ids.shape[0]
+        total_ll = 0.0
+        n_tokens = 0
+        for i in range(tgt_len - 1):
+            if dec_mask[i + 1, 0].item():  # padding starts here
+                break
+            next_tok = dec_ids[i + 1, 0].item()
+            total_ll += token_log_probs[i, 0, next_tok].item()
+            n_tokens += 1
+
+        mean_ll = total_ll / max(n_tokens, 1)
+        results.append(SynthesisScoreResult(
+            reaction_smarts=smarts,
+            log_likelihood=round(mean_ll, 6),
+            n_product_tokens=n_tokens,
+        ))
+
+    return SynthesisScoreResponse(model_name=model_name, scores=results)
+
+
+def _run_synthesis(request: SynthesisRequest, model_name: str) -> SynthesisResponse:
+    """Forward synthesis: encode reactants, beam-search decode predicted products."""
+    try:
+        chemformer = _load_model(model_name)
+    except Exception as exc:
+        raise HTTPException(status_code=404, detail=f"Could not load model '{model_name}': {exc}")
+
+    # Accept either plain reactants SMILES or reaction SMARTS (use left side only)
+    reactants = request.smiles.split(">>")[0].strip()
+
+    encoder = BatchEncoder(
+        tokenizer=chemformer.tokenizer,
+        masker=None,
+        max_seq_len=util.DEFAULT_MAX_SEQ_LEN,
+    )
+    encoder_ids, encoder_mask = encoder([reactants], mask=False, add_sep_token=False)
+    batch = {
+        "encoder_input": encoder_ids.to(chemformer.device),
+        "encoder_pad_mask": encoder_mask.to(chemformer.device),
+        "target_smiles": [reactants],
+    }
+
+    chemformer.model.num_beams = request.n_beams
+    chemformer.model.n_unique_beams = request.n_beams
+    chemformer.model.to(chemformer.device)
+    chemformer.model.eval()
+
+    n_input_tokens = int(encoder_ids.shape[0])
+    limit = min(max(_BEAM_LIMIT_MIN, int(n_input_tokens * _BEAM_LIMIT_INPUT_SCALE)), _BEAM_LIMIT_MAX)
+
+    sampler = chemformer.model.sampler
+    while True:
+        with torch.no_grad():
+            smiles_batch, log_lhs_batch = chemformer.model.sample_molecules(
+                batch, sampling_alg="beam", limit=limit,
+            )
+        if sampler.sample_unique:
+            smiles_batch = sampler.smiles_unique
+            log_lhs_batch = sampler.log_lhs_unique
+
+        n_beams = len(smiles_batch[0]) if len(smiles_batch) else 0
+        n_valid = _count_valid(smiles_batch[0]) if n_beams else 0
+        if n_beams == 0 or n_valid / n_beams >= _VALID_SMILES_THRESHOLD or limit >= _BEAM_LIMIT_MAX:
+            break
+        limit = min(limit * 2, _BEAM_LIMIT_MAX)
+        print(f"Retrying synthesis beam search with limit={limit} ({n_valid}/{n_beams} valid)")
+
+    if not smiles_batch:
+        raise HTTPException(status_code=500, detail="Model returned no predictions.")
+
+    predictions = [
+        SynthesisPrediction(product_smiles=str(smi), log_likelihood=float(lh))
+        for smi, lh in zip(smiles_batch[0], log_lhs_batch[0])
+    ]
+    return SynthesisResponse(
+        reactants_smiles=reactants,
+        model_name=model_name,
+        predictions=predictions,
+    )
 
 
 # ── shared prediction logic ───────────────────────────────────────────────────
@@ -498,6 +693,76 @@ def embed_reaction_named(model_name: str, request: EmbedReactionRequest):
         else request.reaction_smarts
     )
     return _run_embed_reaction(smarts_list, model_name, request.encode_side, request.pooling)
+
+
+@app.post(
+    "/synthesis/predict",
+    response_model=SynthesisResponse,
+    summary="Predict products from reactants (default model)",
+    response_description="Ranked predicted products for the input reactants.",
+)
+def synthesis_predict_default(request: SynthesisRequest):
+    """Forward synthesis: encode reactants, beam-search decode predicted products.
+
+    Accepts dot-separated reactant SMILES or reaction SMARTS (`reactants>>`).
+    Uses the default checkpoint configured via `CHEMFORMER_MODEL`.
+    """
+    return _run_synthesis(request, _DEFAULT_MODEL_NAME)
+
+
+@app.post(
+    "/synthesis/{model_name}/predict",
+    response_model=SynthesisResponse,
+    summary="Predict products from reactants (named model)",
+    response_description="Ranked predicted products for the input reactants.",
+)
+def synthesis_predict_named(model_name: str, request: SynthesisRequest):
+    """Forward synthesis using a named checkpoint from `CHEMFORMER_MODEL_DIR`.
+
+    `model_name` is the checkpoint filename stem (without `.ckpt`).
+    """
+    return _run_synthesis(request, model_name)
+
+
+@app.post(
+    "/synthesis/score",
+    response_model=SynthesisScoreResponse,
+    summary="Score reaction viability (default model)",
+    response_description="Per-token mean log-likelihood for each scored reaction.",
+)
+def synthesis_score_default(request: SynthesisScoreRequest):
+    """Score one or more reactions via teacher-forced decoding.
+
+    Accepts `reactants>>product` SMARTS. Returns the mean per-token log-likelihood
+    of the product sequence given the reactants — higher (less negative) means the
+    model considers the reaction more plausible.
+    Uses the default checkpoint configured via `CHEMFORMER_MODEL`.
+    """
+    smarts_list = (
+        [request.reaction_smarts]
+        if isinstance(request.reaction_smarts, str)
+        else request.reaction_smarts
+    )
+    return _run_score_reactions(smarts_list, _DEFAULT_MODEL_NAME)
+
+
+@app.post(
+    "/synthesis/{model_name}/score",
+    response_model=SynthesisScoreResponse,
+    summary="Score reaction viability (named model)",
+    response_description="Per-token mean log-likelihood for each scored reaction.",
+)
+def synthesis_score_named(model_name: str, request: SynthesisScoreRequest):
+    """Score reactions using a named checkpoint from `CHEMFORMER_MODEL_DIR`.
+
+    `model_name` is the checkpoint filename stem (without `.ckpt`).
+    """
+    smarts_list = (
+        [request.reaction_smarts]
+        if isinstance(request.reaction_smarts, str)
+        else request.reaction_smarts
+    )
+    return _run_score_reactions(smarts_list, model_name)
 
 
 @app.get("/models", summary="List loaded models")
