@@ -43,6 +43,20 @@ PUBCHEM_CACHE_DIR = Path("src/chemformer/data/pubchem")
 PUBCHEM_RATE_DELAY = 0.22  # stay under PubChem's 5 req/s limit
 PUBCHEM_PROPERTIES = "IUPACName,MolecularFormula,MolecularWeight,IsomericSMILES,InChIKey,Complexity,XLogP"
 
+# Map nested PubChem Record Section/Information TOCHeading → flat key
+_RECORD_PROP_MAP = {
+    "IUPAC Name": "IUPACName",
+    "Molecular Formula": "MolecularFormula",
+    "Molecular Weight": "MolecularWeight",
+    "Isomeric SMILES": "IsomericSMILES",
+    "SMILES": "IsomericSMILES",
+    "InChI": "InChI",
+    "InChIKey": "InChIKey",
+    "Computed Properties": None,  # parent section; skip
+    "Complexity": "Complexity",
+    "XLogP3": "XLogP",
+}
+
 DEFAULT_MODEL = "backward_uspto50k"
 
 
@@ -74,7 +88,7 @@ def _predict(smiles: str, model: str, n_beams: int, url: str) -> list:
         r = requests.post(
             endpoint,
             json={"smiles": smiles, "n_beams": n_beams},
-            timeout=180,
+            timeout=(10, 90),  # (connect, read) — read per-chunk; prevents HTTP/2 PING reset
         )
         r.raise_for_status()
         return r.json().get("predictions", [])
@@ -208,33 +222,60 @@ def cid_from_smiles(smiles: str) -> Optional[int]:
     return cids[0] if cids and cids[0] > 0 else None
 
 
+def _extract_from_record(record: dict, cid: int) -> dict:
+    """Walk the nested Record Section/Information tree to extract flat properties."""
+    props: dict = {"cid": cid}
+
+    def _walk(sections):
+        for section in sections:
+            heading = section.get("TOCHeading", "")
+            flat_key = _RECORD_PROP_MAP.get(heading)
+            if flat_key is not None:
+                for info in section.get("Information", []):
+                    for val_block in info.get("Value", {}).get("StringWithMarkup", []):
+                        props.setdefault(flat_key, val_block.get("String"))
+                    if flat_key not in props:
+                        for val_block in info.get("Value", {}).get("Number", []):
+                            props.setdefault(flat_key, val_block)
+            _walk(section.get("Section", []))
+
+    _walk(record.get("Section", []))
+    return props
+
+
 def fetch_compound(cid: int) -> dict:
     PUBCHEM_CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_file = PUBCHEM_CACHE_DIR / f"{cid}.json"
-    if cache_file.exists():
-        return json.loads(cache_file.read_text())
+    cache_file = PUBCHEM_CACHE_DIR / f"COMPOUND_CID_{cid}.json"
 
-    r = _pubchem_get(f"{PUBCHEM_BASE}/compound/cid/{cid}/property/{PUBCHEM_PROPERTIES}/JSON")
+    if cache_file.exists():
+        blob = json.loads(cache_file.read_text())
+        record = blob.get("Record", {})
+        props = _extract_from_record(record, cid)
+        # vendor_count / bioassay_count are not in the full record; fall back to 0
+        props.setdefault("vendor_count", 0)
+        props.setdefault("bioassay_count", 0)
+        return props
+
+    # Fetch full compound record
+    r = _pubchem_get(f"{PUBCHEM_BASE}/compound/cid/{cid}/JSON")
     if not r.ok:
         return {"cid": cid, "vendor_count": 0, "bioassay_count": 0}
-    props = r.json()["PropertyTable"]["Properties"][0]
 
+    blob = r.json()
+    cache_file.write_text(json.dumps(blob, indent=2))
+    record = blob.get("Record", {})
+    props = _extract_from_record(record, cid)
+
+    # vendor and bioassay counts require separate endpoints (not in full record)
     rv = _pubchem_get(f"{PUBCHEM_BASE}/compound/cid/{cid}/xrefs/SourceName/JSON")
-    vendor_count = len(
+    props["vendor_count"] = len(
         rv.json().get("InformationList", {}).get("Information", [{}])[0].get("SourceName", [])
     ) if rv.ok else 0
 
     rb = _pubchem_get(f"{PUBCHEM_BASE}/compound/cid/{cid}/assaysummary/JSON")
-    bioassay_count = len(rb.json().get("Table", {}).get("Row", [])) if rb.ok else 0
+    props["bioassay_count"] = len(rb.json().get("Table", {}).get("Row", [])) if rb.ok else 0
 
-    compound = {
-        "cid": cid,
-        **{k: v for k, v in props.items() if k != "CID"},
-        "vendor_count": vendor_count,
-        "bioassay_count": bioassay_count,
-    }
-    cache_file.write_text(json.dumps(compound, indent=2))
-    return compound
+    return props
 
 
 def evaluate_leaves(leaf_smiles: list) -> dict:

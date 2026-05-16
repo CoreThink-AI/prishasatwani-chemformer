@@ -1,8 +1,12 @@
+import logging
+
 import torch
 import torch.utils.data as tud
 from tqdm import tqdm
 
 from molbart.constants import DEBUG
+
+logger = logging.getLogger(__name__)
 
 
 class Node:
@@ -228,7 +232,7 @@ class LogicalOr(Criterion):
         return any([c(node) for c in self.criteria])
 
 
-def beamsearch(node, beam_size, stop_criterion, verbose=DEBUG, limit=512):
+def beamsearch(node, beam_size, stop_criterion, verbose=False, limit=256):
     """ Generate a new state tensor (SMILES str) repeatedly until stop_criteria are met (max_tokens or EOS zeros in tensor)
 
     >>> print(f"vars(node): {vars(node)}")
@@ -293,31 +297,31 @@ def beamsearch(node, beam_size, stop_criterion, verbose=DEBUG, limit=512):
         'll_mask': tensor([False]), 'pos': 0, 'beam_width': 10}
     """
     node.set_beam_width(beam_size)
-    print(f"                    DEBUG: {DEBUG}")
-    print(f"                dir(node): {dir(node)}")
-    print(f"  Sampling with beam_size: {beam_size}")
-    print(f"                    limit: {limit}")
-    print(f"node.get_actions().size(): {node.get_actions().size()} [batch_size, output/vocabulary_size]")
-    print( "                           (vocab_size: mol_vocab_size + num_special_tokens (+ 5))")
-    # print(f"{limit}\t{node}\t{type(node.get_actions().size())}")
+    logger.info(f"                    DEBUG: {DEBUG}")
+    logger.info(f"                dir(node): {dir(node)}")
+    logger.info(f"  Sampling with beam_size: {beam_size}")
+    logger.info(f"                    limit: {limit}")
+    logger.info(f"node.get_actions().size(): {node.get_actions().size()} [batch_size, output/vocabulary_size]")
+    logger.info( "                           (vocab_size: mol_vocab_size + num_special_tokens (+ 5))")
+    # logger.info(f"{limit}\t{node}\t{type(node.get_actions().size())}")
     num_actions = 0
     for limit_i in tqdm(range(limit)):
         if stop_criterion(node):
             break
         a = node.get_actions()
         if verbose:
-            print(f"num_actions={num_actions}\tnode.y: {node.y}\tnode.x: {node.x}")
+            logger.info(f"num_actions={num_actions}\tnode.y: {node.y}\tnode.x: {node.x}")
         node.action(a)
         num_actions = limit_i + 1
         # if limit <= 0:
-        #     print("WARNING: Unable to generate a complete SMILES str!!!")
+        #     logger.info("WARNING: Unable to generate a complete SMILES str!!!")
         #     break
-    print(f"           num_actions taken: {num_actions}")
+    logger.info(f"           num_actions taken: {num_actions}")
     a = node.get_actions()
 
     end_tokens = node.vocabulary["end"] * torch.logical_not(node.ll_mask).type(node.y.dtype)
     node.y = torch.cat((node.y, end_tokens.view(-1, 1)), dim=-1)
     ll_tail = a[torch.arange(len(a)), end_tokens] * torch.logical_not(node.ll_mask).type(a.dtype)
     node.loglikelihood = node.loglikelihood + ll_tail.view(-1, 1)
-    print(f"Final node after beam search: {node}")
+    logger.warn(f"Final node after beam search: {node}")
     return node

@@ -32,7 +32,6 @@ import torch
 import molbart.utils.data_utils as util
 from fastapi import FastAPI, HTTPException
 from molbart.constants import CONFIG_DIR
-from molbart.data import SynthesisDataModule
 from molbart.data.util import BatchEncoder
 from molbart.models import Chemformer
 from pydantic import BaseModel, Field
@@ -93,8 +92,14 @@ def _load_model(model_name: str) -> Chemformer:
     return model
 
 
-# Eagerly load the default model at startup so the first request isn't slow.
+# Eagerly load all known models at startup to eliminate cold-start latency on first request.
 _load_model(_DEFAULT_MODEL_NAME)
+for _preload_name in ("backward_uspto50k", "uspto_50_last_v2"):
+    if _preload_name != _DEFAULT_MODEL_NAME:
+        try:
+            _load_model(_preload_name)
+        except Exception as _e:
+            print(f"Warning: could not pre-load '{_preload_name}': {_e}")
 
 
 # ── FastAPI app ───────────────────────────────────────────────────────────────
@@ -314,22 +319,36 @@ def _run_predict(request: RetrosynthesisRequest, model_name: str) -> Retrosynthe
     except Exception as exc:
         raise HTTPException(status_code=404, detail=f"Could not load model '{model_name}': {exc}")
 
-    datamodule = SynthesisDataModule(
-        reactants=[request.smiles],
-        products=[request.smiles],
-        dataset_path="",
+    # Build encoder batch directly — avoids SynthesisDataModule setup overhead (~300 ms/req)
+    encoder = BatchEncoder(
         tokenizer=chemformer.tokenizer,
-        batch_size=1,
+        masker=None,
         max_seq_len=util.DEFAULT_MAX_SEQ_LEN,
-        augment_prob=False,
-        reverse=True,
     )
-    datamodule.setup()
+    encoder_ids, encoder_mask = encoder([request.smiles], mask=False, add_sep_token=False)
+    batch = {
+        "encoder_input": encoder_ids.to(chemformer.device),
+        "encoder_pad_mask": encoder_mask.to(chemformer.device),
+        "target_smiles": [request.smiles],
+    }
 
     chemformer.model.num_beams = request.n_beams
     chemformer.model.n_unique_beams = request.n_beams
+    chemformer.model.to(chemformer.device)
+    chemformer.model.eval()
 
-    sampled_smiles, log_lhs, _ = chemformer.predict(dataloader=datamodule.full_dataloader())
+    with torch.no_grad():
+        smiles_batch, log_lhs_batch = chemformer.model.sample_molecules(
+            batch, sampling_alg="beam"
+        )
+
+    sampler = chemformer.model.sampler
+    if sampler.sample_unique:
+        smiles_batch = sampler.smiles_unique
+        log_lhs_batch = sampler.log_lhs_unique
+
+    sampled_smiles = [smiles_batch]
+    log_lhs = [log_lhs_batch]
 
     if not sampled_smiles:
         raise HTTPException(status_code=500, detail="Model returned no predictions.")
