@@ -29,6 +29,7 @@ from typing import Dict, List, Optional, Union
 
 import omegaconf as oc
 import torch
+from rdkit import Chem
 import molbart.utils.data_utils as util
 from fastapi import FastAPI, HTTPException
 from molbart.constants import CONFIG_DIR
@@ -313,6 +314,22 @@ def _run_embed_reaction(
 
 # ── shared prediction logic ───────────────────────────────────────────────────
 
+_BEAM_LIMIT_MIN = 64       # floor: never go below this
+_BEAM_LIMIT_INPUT_SCALE = 2.0  # initial limit = input_tokens * this factor
+_BEAM_LIMIT_MAX = 512      # hard ceiling for retries
+_VALID_SMILES_THRESHOLD = 0.5  # retry if fewer than this fraction of beams are valid SMILES
+
+
+def _count_valid(smiles_arr) -> int:
+    """Count dot-separated reactant strings that are all valid SMILES."""
+    count = 0
+    for entry in smiles_arr:
+        parts = str(entry).split(".")
+        if all(Chem.MolFromSmiles(p) is not None for p in parts if p):
+            count += 1
+    return count
+
+
 def _run_predict(request: RetrosynthesisRequest, model_name: str) -> RetrosynthesisResponse:
     try:
         chemformer = _load_model(model_name)
@@ -337,15 +354,30 @@ def _run_predict(request: RetrosynthesisRequest, model_name: str) -> Retrosynthe
     chemformer.model.to(chemformer.device)
     chemformer.model.eval()
 
-    with torch.no_grad():
-        smiles_batch, log_lhs_batch = chemformer.model.sample_molecules(
-            batch, sampling_alg="beam"
-        )
+    # Proactive: scale initial limit to input token length so long products get enough steps
+    n_input_tokens = int(encoder_ids.shape[0])
+    limit = max(_BEAM_LIMIT_MIN, int(n_input_tokens * _BEAM_LIMIT_INPUT_SCALE))
+    limit = min(limit, _BEAM_LIMIT_MAX)
 
     sampler = chemformer.model.sampler
-    if sampler.sample_unique:
-        smiles_batch = sampler.smiles_unique
-        log_lhs_batch = sampler.log_lhs_unique
+    smiles_batch = log_lhs_batch = None
+
+    while True:
+        with torch.no_grad():
+            smiles_batch, log_lhs_batch = chemformer.model.sample_molecules(
+                batch, sampling_alg="beam", limit=limit,
+            )
+        if sampler.sample_unique:
+            smiles_batch = sampler.smiles_unique
+            log_lhs_batch = sampler.log_lhs_unique
+
+        # Reactive: if too many outputs are truncated/invalid, double the limit and retry
+        n_beams = len(smiles_batch[0]) if len(smiles_batch) else 0
+        n_valid = _count_valid(smiles_batch[0]) if n_beams else 0
+        if n_beams == 0 or n_valid / n_beams >= _VALID_SMILES_THRESHOLD or limit >= _BEAM_LIMIT_MAX:
+            break
+        limit = min(limit * 2, _BEAM_LIMIT_MAX)
+        print(f"Retrying beam search with limit={limit} ({n_valid}/{n_beams} valid on previous run)")
 
     sampled_smiles = [smiles_batch]
     log_lhs = [log_lhs_batch]

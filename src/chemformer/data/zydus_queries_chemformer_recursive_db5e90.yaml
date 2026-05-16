@@ -1,0 +1,991 @@
+metadata:
+  git_hash: db5e903e5357c9778d6ab673c726bcf468bb34d7
+  api_url: https://chemformer-retrosynthesis-knq67derjq-uc.a.run.app
+  model: backward_uspto50k
+  n_beams: 10
+  max_depth: 3
+  min_ll: -5.0
+  max_mw: 300.0
+  max_pathways: 4
+  timestamp: '2026-05-16T01:02:01.994767+00:00'
+results:
+- query_name: Aspirin
+  pubchem_cid: 2244
+  input_smiles: CC(=O)OC1=CC=CC=C1C(=O)O
+  latency_s: 14.02
+  tree_status: expanded
+  pathways_found: 1
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 1
+    min_log_likelihood: -0.7421
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: CC(=O)Oc1ccccc1C(=O)O
+      reactant_smiles:
+      - CC(=O)Cl
+      - O=C(O)c1ccccc1O
+      log_likelihood: -0.7421
+      reaction_smarts: CC(=O)Cl.O=C(O)c1ccccc1O>>CC(=O)Oc1ccccc1C(=O)O
+    leaf_reactants:
+    - smiles: CC(=O)Cl
+      found: true
+      cid: 6367
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 261
+      purchasable: true
+    - smiles: O=C(O)c1ccccc1O
+      found: true
+      cid: 338
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 579
+      purchasable: true
+- query_name: Ibuprofen
+  pubchem_cid: 3672
+  input_smiles: CC(C)CC1=CC=C(C=C1)[C@@H](C)C(=O)O
+  latency_s: 18.66
+  tree_status: expanded
+  pathways_found: 4
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 1
+    min_log_likelihood: -1.2401
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+      reactant_smiles:
+      - CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+      log_likelihood: -1.2401
+      reaction_smarts: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1>>CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+    leaf_reactants: []
+  - pathway_rank: 2
+    step_count: 1
+    min_log_likelihood: -2.6406
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+      reactant_smiles:
+      - COC(=O)[C@H](C)c1ccc(CC(C)C)cc1
+      log_likelihood: -2.6406
+      reaction_smarts: CC(C)Cc1ccc([C@@H](C)C(=O)OC)cc1>>CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+    leaf_reactants:
+    - smiles: COC(=O)[C@H](C)c1ccc(CC(C)C)cc1
+      found: true
+      cid: 5326009
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 39
+      purchasable: true
+  - pathway_rank: 3
+    step_count: 1
+    min_log_likelihood: -3.0489
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+      reactant_smiles:
+      - CC(C)=Cc1ccc([C@@H](C)C(=O)O)cc1
+      log_likelihood: -3.0489
+      reaction_smarts: CC(C)=Cc1ccc([C@@H](C)C(=O)O)cc1>>CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+    leaf_reactants:
+    - smiles: CC(C)=Cc1ccc([C@@H](C)C(=O)O)cc1
+      found: true
+      cid: 11644131
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 5
+      purchasable: true
+  - pathway_rank: 4
+    step_count: 1
+    min_log_likelihood: -3.3487
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+      reactant_smiles:
+      - CCOC(=O)[C@H](C)c1ccc(CC(C)C)cc1
+      log_likelihood: -3.3487
+      reaction_smarts: CC(C)Cc1ccc([C@@H](C)C(=O)OCC)cc1>>CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+    leaf_reactants:
+    - smiles: CCOC(=O)[C@H](C)c1ccc(CC(C)C)cc1
+      found: true
+      cid: 56665514
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 28
+      purchasable: true
+- query_name: Paclitaxel
+  pubchem_cid: 36314
+  input_smiles: CC1=C2[C@H](C(=O)[C@@]3([C@H](C[C@@H]4[C@]([C@H]3[C@@H]([C@@](C2(C)C)(C[C@@H]1OC(=O)[C@@H]([C@H](C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C
+  latency_s: 90.12
+  tree_status: no_viable_reactions
+  pathways_found: 0
+  best_ll: null
+  pathways: []
+- query_name: Etoricoxib
+  pubchem_cid: 123619
+  input_smiles: CC1=NC=C(C=C1)C2=C(C=C(C=N2)Cl)C3=CC=C(C=C3)S(=O)(=O)C
+  latency_s: 122.98
+  tree_status: expanded
+  pathways_found: 4
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 3
+    min_log_likelihood: -1.8603
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: Cc1ccc(-c2ncc(Cl)cc2-c2ccc(S(C)(=O)=O)cc2)cn1
+      reactant_smiles: &id001
+      - CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+      - Cc1ccc(B(O)O)cn1
+      log_likelihood: -0.6298
+      reaction_smarts: CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1.Cc1ccc(B(O)O)cn1>>Cc1ccc(-c2ncc(Cl)cc2-c2ccc(S(C)(=O)=O)cc2)cn1
+    - step: 2
+      product_smiles: CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+      reactant_smiles: &id002
+      - CS(=O)(=O)c1ccc(B(O)O)cc1
+      - Clc1cnc(Br)c(I)c1
+      log_likelihood: -1.0466
+      reaction_smarts: CS(=O)(=O)c1ccc(B(O)O)cc1.Clc1cnc(Br)c(I)c1>>CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+    - step: 3
+      product_smiles: Clc1cnc(Br)c(I)c1
+      reactant_smiles:
+      - Clc1cnc(Br)c(I)c1I
+      log_likelihood: -1.8603
+      reaction_smarts: Clc1cnc(Br)c(I)c1I>>Clc1cnc(Br)c(I)c1
+    leaf_reactants:
+    - smiles: Cc1ccc(B(O)O)cn1
+      found: true
+      cid: 2763081
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 177
+      purchasable: true
+    - smiles: CS(=O)(=O)c1ccc(B(O)O)cc1
+      found: true
+      cid: 2734364
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 191
+      purchasable: true
+    - smiles: Clc1cnc(Br)c(I)c1I
+      found: false
+  - pathway_rank: 2
+    step_count: 2
+    min_log_likelihood: -3.0161
+    quality: partial
+    all_leaves_found: true
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: Cc1ccc(-c2ncc(Cl)cc2-c2ccc(S(C)(=O)=O)cc2)cn1
+      reactant_smiles: *id001
+      log_likelihood: -0.6298
+      reaction_smarts: CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1.Cc1ccc(B(O)O)cn1>>Cc1ccc(-c2ncc(Cl)cc2-c2ccc(S(C)(=O)=O)cc2)cn1
+    - step: 2
+      product_smiles: CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+      reactant_smiles:
+      - CS(=O)(=O)c1ccc(B(O)O)cc1
+      - Clc1cnc(Br)c(I)c1
+      log_likelihood: -3.0161
+      reaction_smarts: CS(=O)(=O)c1ccc(B(O)O)cc1.Ic1cc(Cl)cnc1Br>>CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+    leaf_reactants:
+    - smiles: Cc1ccc(B(O)O)cn1
+      found: true
+      cid: 2763081
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: CS(=O)(=O)c1ccc(B(O)O)cc1
+      found: true
+      cid: 2734364
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: Clc1cnc(Br)c(I)c1
+      found: true
+      cid: 118999005
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 50
+      purchasable: true
+  - pathway_rank: 3
+    step_count: 3
+    min_log_likelihood: -3.2099
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: Cc1ccc(-c2ncc(Cl)cc2-c2ccc(S(C)(=O)=O)cc2)cn1
+      reactant_smiles: *id001
+      log_likelihood: -0.6298
+      reaction_smarts: CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1.Cc1ccc(B(O)O)cn1>>Cc1ccc(-c2ncc(Cl)cc2-c2ccc(S(C)(=O)=O)cc2)cn1
+    - step: 2
+      product_smiles: CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+      reactant_smiles: *id002
+      log_likelihood: -1.0466
+      reaction_smarts: CS(=O)(=O)c1ccc(B(O)O)cc1.Clc1cnc(Br)c(I)c1>>CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+    - step: 3
+      product_smiles: Clc1cnc(Br)c(I)c1
+      reactant_smiles:
+      - Clc1cnc(Br)c(I)c1I
+      log_likelihood: -3.2099
+      reaction_smarts: c1(Cl)cnc(Br)c(I)c1I>>Clc1cnc(Br)c(I)c1
+    leaf_reactants:
+    - smiles: Cc1ccc(B(O)O)cn1
+      found: true
+      cid: 2763081
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: CS(=O)(=O)c1ccc(B(O)O)cc1
+      found: true
+      cid: 2734364
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: Clc1cnc(Br)c(I)c1I
+      found: false
+  - pathway_rank: 4
+    step_count: 3
+    min_log_likelihood: -3.4865
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: Cc1ccc(-c2ncc(Cl)cc2-c2ccc(S(C)(=O)=O)cc2)cn1
+      reactant_smiles: *id001
+      log_likelihood: -0.6298
+      reaction_smarts: CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1.Cc1ccc(B(O)O)cn1>>Cc1ccc(-c2ncc(Cl)cc2-c2ccc(S(C)(=O)=O)cc2)cn1
+    - step: 2
+      product_smiles: CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+      reactant_smiles: *id002
+      log_likelihood: -1.0466
+      reaction_smarts: CS(=O)(=O)c1ccc(B(O)O)cc1.Clc1cnc(Br)c(I)c1>>CS(=O)(=O)c1ccc(-c2cc(Cl)cnc2Br)cc1
+    - step: 3
+      product_smiles: Clc1cnc(Br)c(I)c1
+      reactant_smiles:
+      - Clc1cnc(Br)c(I)c1I
+      log_likelihood: -3.4865
+      reaction_smarts: Ic1c(Br)ncc(Cl)c1I>>Clc1cnc(Br)c(I)c1
+    leaf_reactants:
+    - smiles: Cc1ccc(B(O)O)cn1
+      found: true
+      cid: 2763081
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: CS(=O)(=O)c1ccc(B(O)O)cc1
+      found: true
+      cid: 2734364
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: Clc1cnc(Br)c(I)c1I
+      found: false
+- query_name: Camlipixant
+  pubchem_cid: 76955630
+  input_smiles: CC1=CC2=NC(=C(N2C=C1)C[C@H]3CN(CCO3)C(=O)OC)C4=C(C=C(C=C4F)C(=O)NC)F
+  latency_s: 147.65
+  tree_status: expanded
+  pathways_found: 4
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 3
+    min_log_likelihood: -0.7893
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: CNC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      reactant_smiles: &id003
+      - CN
+      - COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+      log_likelihood: -0.6757
+      reaction_smarts: CN.COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1>>CNC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+    - step: 2
+      product_smiles: COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+      reactant_smiles: &id004
+      - COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      log_likelihood: -0.6565
+      reaction_smarts: COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)OC)cc3F)nc3cc(C)ccn23)C1>>COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+    - step: 3
+      product_smiles: COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      reactant_smiles:
+      - COC(=O)Cl
+      - COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CNCCO2)c(F)c1
+      log_likelihood: -0.7893
+      reaction_smarts: COC(=O)Cl.COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CNCCO2)c(F)c1>>COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+    leaf_reactants:
+    - smiles: CN
+      found: true
+      cid: 6329
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 228
+      purchasable: true
+    - smiles: COC(=O)Cl
+      found: true
+      cid: 6586
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 146
+      purchasable: true
+    - smiles: COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CNCCO2)c(F)c1
+      found: true
+      cid: 162374976
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 1
+      purchasable: true
+  - pathway_rank: 2
+    step_count: 3
+    min_log_likelihood: -3.2785
+    quality: partial
+    all_leaves_found: true
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: CNC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      reactant_smiles: *id003
+      log_likelihood: -0.6757
+      reaction_smarts: CN.COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1>>CNC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+    - step: 2
+      product_smiles: COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+      reactant_smiles: *id004
+      log_likelihood: -0.6565
+      reaction_smarts: COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)OC)cc3F)nc3cc(C)ccn23)C1>>COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+    - step: 3
+      product_smiles: COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      reactant_smiles:
+      - COC(=O)Cl
+      - COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CNCCO2)c(F)c1
+      log_likelihood: -3.2785
+      reaction_smarts: COC(=O)Cl.Cc1ccn2c(C[C@H]3CNCCO3)c(-c3c(F)cc(C(=O)OC)cc3F)nc2c1>>COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+    leaf_reactants:
+    - smiles: CN
+      found: true
+      cid: 6329
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: COC(=O)Cl
+      found: true
+      cid: 6586
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: COC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CNCCO2)c(F)c1
+      found: true
+      cid: 162374976
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+  - pathway_rank: 3
+    step_count: 1
+    min_log_likelihood: -3.7557
+    quality: partial
+    all_leaves_found: true
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: CNC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      reactant_smiles:
+      - CN
+      - COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+      log_likelihood: -3.7557
+      reaction_smarts: CN.Cc1ccn2c(C[C@H]3CN(C(=O)OC)CCO3)c(-c3c(F)cc(C(=O)O)cc3F)nc2c1>>CNC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+    leaf_reactants:
+    - smiles: CN
+      found: true
+      cid: 6329
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+      found: true
+      cid: 153626349
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 3
+      purchasable: true
+  - pathway_rank: 4
+    step_count: 3
+    min_log_likelihood: -4.365
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: CNC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      reactant_smiles: *id003
+      log_likelihood: -0.6757
+      reaction_smarts: CN.COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1>>CNC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+    - step: 2
+      product_smiles: COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+      reactant_smiles:
+      - CCOC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      log_likelihood: -4.365
+      reaction_smarts: COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)OCC)cc3F)nc3cc(C)ccn23)C1>>COC(=O)N1CCO[C@@H](Cc2c(-c3c(F)cc(C(=O)O)cc3F)nc3cc(C)ccn23)C1
+    - step: 3
+      product_smiles: CCOC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+      reactant_smiles:
+      - CCOC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CNCCO2)c(F)c1
+      - COC(=O)Cl
+      log_likelihood: -0.6876
+      reaction_smarts: CCOC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CNCCO2)c(F)c1.COC(=O)Cl>>CCOC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CN(C(=O)OC)CCO2)c(F)c1
+    leaf_reactants:
+    - smiles: CN
+      found: true
+      cid: 6329
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: CCOC(=O)c1cc(F)c(-c2nc3cc(C)ccn3c2C[C@H]2CNCCO2)c(F)c1
+      found: false
+    - smiles: COC(=O)Cl
+      found: true
+      cid: 6586
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+- query_name: Fluorinated_Imidazole
+  pubchem_cid: 84117446
+  input_smiles: CN1C=NC(=C1C2=CC=CC=C2F)C#N
+  latency_s: 24.34
+  tree_status: expanded
+  pathways_found: 1
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 1
+    min_log_likelihood: -0.6578
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: Cn1cnc(C#N)c1-c1ccccc1F
+      reactant_smiles:
+      - Cn1cnc(C#N)c1Br
+      - OB(O)c1ccccc1F
+      log_likelihood: -0.6578
+      reaction_smarts: Cn1cnc(C#N)c1Br.OB(O)c1ccccc1F>>Cn1cnc(C#N)c1-c1ccccc1F
+    leaf_reactants:
+    - smiles: Cn1cnc(C#N)c1Br
+      found: true
+      cid: 84049009
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 29
+      purchasable: true
+    - smiles: OB(O)c1ccccc1F
+      found: true
+      cid: 2734354
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 226
+      purchasable: true
+- query_name: Fluorinated_Imidazole
+  pubchem_cid: 56842878
+  input_smiles: C1C[C@H](N(C1)C(=O)[C@H](CC2=C(N=CN2)F)NC(=O)[C@@H]3CCC(=O)N3)C(=O)N
+  latency_s: 25.48
+  tree_status: expanded
+  pathways_found: 4
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 1
+    min_log_likelihood: -1.1758
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+      reactant_smiles:
+      - NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F
+      - O=C1CC[C@@H](C(=O)O)N1
+      log_likelihood: -1.1758
+      reaction_smarts: NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F.O=C1CC[C@@H](C(=O)O)N1>>NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+    leaf_reactants:
+    - smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F
+      found: false
+    - smiles: O=C1CC[C@@H](C(=O)O)N1
+      found: true
+      cid: 7405
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 274
+      purchasable: true
+  - pathway_rank: 2
+    step_count: 1
+    min_log_likelihood: -3.4536
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+      reactant_smiles:
+      - NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F
+      - O=C1CC[C@@H](C(=O)O)N1
+      log_likelihood: -3.4536
+      reaction_smarts: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)N.O=C1CC[C@@H](C(=O)O)N1>>NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+    leaf_reactants:
+    - smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F
+      found: false
+    - smiles: O=C1CC[C@@H](C(=O)O)N1
+      found: true
+      cid: 7405
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+  - pathway_rank: 3
+    step_count: 1
+    min_log_likelihood: -4.4121
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+      reactant_smiles:
+      - NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F
+      - O=C1CC[C@@H](C(=O)O)N1
+      log_likelihood: -4.4121
+      reaction_smarts: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)N.O=C1N[C@H](C(O)=O)CC1>>NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+    leaf_reactants:
+    - smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F
+      found: false
+    - smiles: O=C1CC[C@@H](C(=O)O)N1
+      found: true
+      cid: 7405
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+  - pathway_rank: 4
+    step_count: 1
+    min_log_likelihood: -4.437
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+      reactant_smiles:
+      - NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F
+      - O=C1CC[C@@H](C(=O)O)N1
+      log_likelihood: -4.437
+      reaction_smarts: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)N.O=C1N[C@H](C(=O)O)CC1>>NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+    leaf_reactants:
+    - smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@@H](N)Cc1[nH]cnc1F
+      found: false
+    - smiles: O=C1CC[C@@H](C(=O)O)N1
+      found: true
+      cid: 7405
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+- query_name: Methoxy_Diphenylamine
+  pubchem_cid: 11435828
+  input_smiles: CC1=CC=C(C=C1)NC2=CC=C(C=C2)OC
+  latency_s: 13.55
+  tree_status: expanded
+  pathways_found: 1
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 1
+    min_log_likelihood: -0.687
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: COc1ccc(Nc2ccc(C)cc2)cc1
+      reactant_smiles:
+      - COc1ccc(N)cc1
+      - Cc1ccc(Br)cc1
+      log_likelihood: -0.687
+      reaction_smarts: COc1ccc(N)cc1.Cc1ccc(Br)cc1>>COc1ccc(Nc2ccc(C)cc2)cc1
+    leaf_reactants:
+    - smiles: COc1ccc(N)cc1
+      found: true
+      cid: 7732
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 249
+      purchasable: true
+    - smiles: Cc1ccc(Br)cc1
+      found: true
+      cid: 7805
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 185
+      purchasable: true
+- query_name: Tolyl_Pyridine
+  pubchem_cid: 603589
+  input_smiles: CC1=CC=C(C=C1)NC2=CN=CC=C2
+  latency_s: 12.19
+  tree_status: expanded
+  pathways_found: 3
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 1
+    min_log_likelihood: -0.8901
+    quality: high
+    all_leaves_found: true
+    all_leaves_purchasable: true
+    steps:
+    - step: 1
+      product_smiles: Cc1ccc(Nc2cccnc2)cc1
+      reactant_smiles:
+      - Brc1cccnc1
+      - Cc1ccc(N)cc1
+      log_likelihood: -0.8901
+      reaction_smarts: Brc1cccnc1.Cc1ccc(N)cc1>>Cc1ccc(Nc2cccnc2)cc1
+    leaf_reactants:
+    - smiles: Brc1cccnc1
+      found: true
+      cid: 12286
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 256
+      purchasable: true
+    - smiles: Cc1ccc(N)cc1
+      found: true
+      cid: 7813
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 277
+      purchasable: true
+  - pathway_rank: 2
+    step_count: 1
+    min_log_likelihood: -1.7905
+    quality: partial
+    all_leaves_found: true
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: Cc1ccc(Nc2cccnc2)cc1
+      reactant_smiles:
+      - Cc1ccc(Br)cc1
+      - Nc1cccnc1
+      log_likelihood: -1.7905
+      reaction_smarts: Cc1ccc(Br)cc1.Nc1cccnc1>>Cc1ccc(Nc2cccnc2)cc1
+    leaf_reactants:
+    - smiles: Cc1ccc(Br)cc1
+      found: true
+      cid: 7805
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: Nc1cccnc1
+      found: true
+      cid: 10009
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 235
+      purchasable: true
+  - pathway_rank: 3
+    step_count: 1
+    min_log_likelihood: -4.2438
+    quality: partial
+    all_leaves_found: true
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: Cc1ccc(Nc2cccnc2)cc1
+      reactant_smiles:
+      - Cc1ccc(Br)cc1
+      - Nc1cccnc1
+      log_likelihood: -4.2438
+      reaction_smarts: Brc1ccc(C)cc1.Nc1cccnc1>>Cc1ccc(Nc2cccnc2)cc1
+    leaf_reactants:
+    - smiles: Cc1ccc(Br)cc1
+      found: true
+      cid: 7805
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: Nc1cccnc1
+      found: true
+      cid: 10009
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+- query_name: Orforglipron
+  pubchem_cid: 137319706
+  input_smiles: C[C@H]1C[C@]1(C2=NOC(=O)N2)N3C4=C(C=C(C=C4)[C@H]5CCOC(C5)(C)C)C=C3C(=O)N6CCC7=NN(C(=C7[C@@H]6C)N8C=CN(C8=O)C9=C(C1=C(C=C9)N(N=C1)C)F)C1=CC(=C(C(=C1)C)F)C
+  latency_s: 90.15
+  tree_status: no_viable_reactions
+  pathways_found: 0
+  best_ll: null
+  pathways: []
+- query_name: Acalabrutinib
+  pubchem_cid: 71226662
+  input_smiles: CC#CC(=O)N1CCC[C@H]1C2=NC(=C3N2C=CN=C3N)C4=CC=C(C=C4)C(=O)NC5=CC=CC=N5
+  latency_s: 194.42
+  tree_status: expanded
+  pathways_found: 4
+  best_ll: null
+  pathways:
+  - pathway_rank: 1
+    step_count: 3
+    min_log_likelihood: -0.9085
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: CC#CC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+      reactant_smiles: &id005
+      - CC#CC(=O)O
+      - Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+      log_likelihood: -0.6988
+      reaction_smarts: CC#CC(=O)O.Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12>>CC#CC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+    - step: 2
+      product_smiles: Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+      reactant_smiles: &id006
+      - CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+      log_likelihood: -0.6197
+      reaction_smarts: CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12>>Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+    - step: 3
+      product_smiles: CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+      reactant_smiles:
+      - CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)O)cc2)c2c(N)nccn12
+      - Nc1ccccn1
+      log_likelihood: -0.9085
+      reaction_smarts: CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)O)cc2)c2c(N)nccn12.Nc1ccccn1>>CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+    leaf_reactants:
+    - smiles: CC#CC(=O)O
+      found: true
+      cid: 68535
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 205
+      purchasable: true
+    - smiles: CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)O)cc2)c2c(N)nccn12
+      found: false
+    - smiles: Nc1ccccn1
+      found: true
+      cid: 10439
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 316
+      purchasable: true
+  - pathway_rank: 2
+    step_count: 3
+    min_log_likelihood: -2.3636
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: CC#CC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+      reactant_smiles: *id005
+      log_likelihood: -0.6988
+      reaction_smarts: CC#CC(=O)O.Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12>>CC#CC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+    - step: 2
+      product_smiles: Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+      reactant_smiles: *id006
+      log_likelihood: -0.6197
+      reaction_smarts: CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12>>Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+    - step: 3
+      product_smiles: CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+      reactant_smiles:
+      - CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(I)c2c(N)nccn12
+      - CC1(C)OB(c2ccc(C(=O)Nc3ccccn3)cc2)OC1(C)C
+      log_likelihood: -2.3636
+      reaction_smarts: CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(I)c2c(N)nccn12.CC1(C)OB(c2ccc(C(=O)Nc3ccccn3)cc2)OC1(C)C>>CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+    leaf_reactants:
+    - smiles: CC#CC(=O)O
+      found: true
+      cid: 68535
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: CC(C)(C)OC(=O)N1CCC[C@H]1c1nc(I)c2c(N)nccn12
+      found: false
+    - smiles: CC1(C)OB(c2ccc(C(=O)Nc3ccccn3)cc2)OC1(C)C
+      found: true
+      cid: 70351953
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 72
+      purchasable: true
+  - pathway_rank: 3
+    step_count: 3
+    min_log_likelihood: -3.449
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: CC#CC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+      reactant_smiles: *id005
+      log_likelihood: -0.6988
+      reaction_smarts: CC#CC(=O)O.Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12>>CC#CC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+    - step: 2
+      product_smiles: Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+      reactant_smiles: &id007
+      - Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+      log_likelihood: -3.449
+      reaction_smarts: Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12>>Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+    - step: 3
+      product_smiles: Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+      reactant_smiles:
+      - Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(I)c12
+      - O=C(Nc1ccccn1)c1ccc(B(O)O)cc1
+      log_likelihood: -1.208
+      reaction_smarts: Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(I)c12.O=C(Nc1ccccn1)c1ccc(B(O)O)cc1>>Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+    leaf_reactants:
+    - smiles: CC#CC(=O)O
+      found: true
+      cid: 68535
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(I)c12
+      found: false
+    - smiles: O=C(Nc1ccccn1)c1ccc(B(O)O)cc1
+      found: true
+      cid: 44119539
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 114
+      purchasable: true
+  - pathway_rank: 4
+    step_count: 3
+    min_log_likelihood: -3.449
+    quality: low
+    all_leaves_found: false
+    all_leaves_purchasable: false
+    steps:
+    - step: 1
+      product_smiles: CC#CC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+      reactant_smiles: *id005
+      log_likelihood: -0.6988
+      reaction_smarts: CC#CC(=O)O.Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12>>CC#CC(=O)N1CCC[C@H]1c1nc(-c2ccc(C(=O)Nc3ccccn3)cc2)c2c(N)nccn12
+    - step: 2
+      product_smiles: Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+      reactant_smiles: *id007
+      log_likelihood: -3.449
+      reaction_smarts: Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12>>Nc1nccn2c([C@@H]3CCCN3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+    - step: 3
+      product_smiles: Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+      reactant_smiles:
+      - Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)O)cc3)c12
+      - Nc1ccccn1
+      log_likelihood: -2.2036
+      reaction_smarts: Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)O)cc3)c12.Nc1ccccn1>>Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)Nc4ccccn4)cc3)c12
+    leaf_reactants:
+    - smiles: CC#CC(=O)O
+      found: true
+      cid: 68535
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false
+    - smiles: Nc1nccn2c([C@@H]3CCCN3C(=O)OCc3ccccc3)nc(-c3ccc(C(=O)O)cc3)c12
+      found: false
+    - smiles: Nc1ccccn1
+      found: true
+      cid: 10439
+      pubchem_name: null
+      inchikey: null
+      complexity: null
+      vendor_count: 0
+      purchasable: false

@@ -105,6 +105,7 @@ class BeamSearchSampler:
         beam_size: int,
         sampling_alg: str = "beam",
         return_tokenized: bool = False,
+        limit: int = 256,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Sample molecules from the model using the search.py implementation of beam
         search.
@@ -118,6 +119,8 @@ class BeamSearchSampler:
                 or "beam"). Raises ValueError otherwise.
             return_tokenized: whether to return the sampled tokens (True), or the
                 converted SMILES (False). Defaults to False.
+            limit (int): Maximum number of autoregressive decoding steps. Pass a value
+                scaled to the input length to avoid truncating long outputs.
 
         Returns:
             (SMILES of sampled molecules and log-likelihoods) or
@@ -148,13 +151,14 @@ class BeamSearchSampler:
 
         stop_criterion = LogicalOr((
             MaxLength(self.max_sequence_length - 1),
-            EOS(),  # EOS (a callable class) is instantiated here and called within the beamsearch inner loop
+            EOS(),
             ))
 
         beamsearch(
             node=node,
             beam_size=beam_size,
             stop_criterion=stop_criterion,
+            limit=limit,
             )
 
         sampled_smiles = tensor_to_text(node, self.tokenizer, beam_size)
