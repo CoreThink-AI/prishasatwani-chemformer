@@ -1,5 +1,9 @@
 # ---- build stage ----
-FROM python:3.8-slim AS builder
+# Bullseye = GLIBC 2.31, matching nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu20.04.
+# python:3.8-slim now resolves to Bookworm (GLIBC 2.36), which causes pip to
+# download manylinux_2_34 wheels (e.g. cryptography) that fail to load on the
+# Ubuntu 20.04 runtime (GLIBC 2.31).
+FROM python:3.8-slim-bullseye AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
