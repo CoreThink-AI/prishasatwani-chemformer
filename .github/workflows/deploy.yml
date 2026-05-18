@@ -27,7 +27,7 @@ env:
   SERVICE_NAME: chemformer-retrosynthesis
   IMAGE: gcr.io/biochem-db-by-hobs/chemformer-retrosynthesis
   CHEMFORMER_MODEL: gs://biochem-db-by-hobs/chemformer/retrosynthesis/backward_uspto50k.ckpt
-  CHEMFORMER_VOCAB: gs://biochem-db-by-hobs/chemformer/vocab/bart_vocab.json
+  CHEMFORMER_VOCAB: gs://biochem-db-by-hobs/chemformer/retrosynthesis/bart_vocab.json
 
 jobs:
   build:
@@ -74,8 +74,10 @@ jobs:
             --region $GCP_REGION \
             --gpu 1 \
             --gpu-type nvidia-l4 \
-            --memory 8Gi \
+            --memory 16Gi \
             --cpu 4 \
+            --max-instances 3 \
+            --no-gpu-zonal-redundancy \
             --allow-unauthenticated \
             --set-env-vars "CHEMFORMER_N_GPUS=1,CHEMFORMER_MODEL=$CHEMFORMER_MODEL,CHEMFORMER_VOCAB=$CHEMFORMER_VOCAB" \
             --quiet
