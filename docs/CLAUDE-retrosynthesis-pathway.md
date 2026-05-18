@@ -17,11 +17,13 @@ Two integration scripts drive automated testing and pathway viability validation
 **URL:** `https://chemformer-retrosynthesis-knq67derjq-uc.a.run.app`
 
 **Key settings:**
-- Memory: 4 GiB (model loads ~2 GB into RAM)
-- CPU: 2 vCPUs
+- GPU: NVIDIA L4 (`nvidia-l4`, 1 GPU)
+- Memory: 16 GiB (required minimum for GPU instances)
+- CPU: 4 vCPUs
+- Max instances: 3 (L4 GPU quota limit per region without zonal redundancy)
 - Timeout: 300 s
 - Concurrency: 1 (model inference is not thread-safe)
-- Min instances: 0 (scales to zero when idle)
+- Min instances: 0 (scales to zero when idle; ~60 s GPU cold-start)
 
 **Model files are NOT baked into the Docker image.** They are downloaded from GCS
 at container startup via env vars:
@@ -32,19 +34,32 @@ at container startup via env vars:
 | `CHEMFORMER_VOCAB` | `gs://biochem-db-by-hobs/chemformer/retrosynthesis/bart_vocab.json` |
 | `CHEMFORMER_MODEL_DIR` | derived from `CHEMFORMER_MODEL` (same GCS prefix) |
 | `CHEMFORMER_N_BEAMS` | `10` |
-| `CHEMFORMER_N_GPUS` | `0` (CPU inference) |
+| `CHEMFORMER_N_GPUS` | `1` (NVIDIA L4) |
 
 **Redeploy workflow:**
 ```bash
-docker build -t gcr.io/biochem-db-by-hobs/chemformer-retrosynthesis:latest .
-docker push gcr.io/biochem-db-by-hobs/chemformer-retrosynthesis:latest
-gcloud run deploy chemformer-retrosynthesis \
-  --image gcr.io/biochem-db-by-hobs/chemformer-retrosynthesis:latest \
-  --region us-central1 --quiet
+# Build via Cloud Build (avoids local docker push hangs on large torch layer)
+gcloud builds submit \
+  --tag gcr.io/biochem-db-by-hobs/chemformer-retrosynthesis:latest \
+  --timeout=3600 .
 
-# NEW REVISIONS DO NOT AUTO-RECEIVE TRAFFIC — always route manually:
+DIGEST=$(gcloud builds describe $(gcloud builds list --limit=1 --format="value(id)") \
+         --format="value(results.images[0].digest)")
+gcloud run deploy chemformer-retrosynthesis \
+  --image "gcr.io/biochem-db-by-hobs/chemformer-retrosynthesis@${DIGEST}" \
+  --region us-central1 \
+  --gpu 1 --gpu-type nvidia-l4 \
+  --memory 16Gi --cpu 4 --max-instances 3 \
+  --no-gpu-zonal-redundancy \
+  --allow-unauthenticated \
+  --set-env-vars "CHEMFORMER_N_GPUS=1,CHEMFORMER_MODEL=gs://biochem-db-by-hobs/chemformer/retrosynthesis/backward_uspto50k.ckpt,CHEMFORMER_VOCAB=gs://biochem-db-by-hobs/chemformer/retrosynthesis/bart_vocab.json" \
+  --quiet
+
+# NEW REVISIONS DO NOT AUTO-RECEIVE TRAFFIC — route manually if deploy reports
+# a prior failed revision:
 REV=$(gcloud run revisions list --service chemformer-retrosynthesis \
-      --region us-central1 --format="value(name)" | head -1)
+      --region us-central1 --format="value(name)" --filter="status.conditions[0].status=True" \
+      | head -1)
 gcloud run services update-traffic chemformer-retrosynthesis \
   --region us-central1 --to-revisions ${REV}=100
 ```
@@ -210,15 +225,33 @@ The API is served over HTTP/2 on Cloud Run. Python `requests` with a plain integ
 `timeout=N` can be defeated by HTTP/2 PING keepalive frames (they reset the socket
 timer without delivering data). Always use a tuple:
 ```python
-timeout=(10, 90)  # (connect_timeout_s, read_timeout_s)
+timeout=(10, 120)  # (connect_timeout_s, read_timeout_s)
+# GPU warm: Aspirin ~3 s, Orforglipron ~26 s
+# GPU cold-start (scale from 0): add ~60 s for L4 initialisation
 ```
+
+---
+
+## Latency (GPU, warm instance)
+
+Measured 2026-05-18 on NVIDIA L4, `n_beams=10`:
+
+| Molecule | MW (Da) | Warm latency | CPU (2 vCPU) |
+|---|---|---|---|
+| Aspirin | 180 | **2.7 s** | ~8–12 s |
+| Ibuprofen | 206 | **3.1 s** | ~10–15 s |
+| Orforglipron | 881 | **25.5 s** | timeout (>90 s) |
+
+GPU cold-start (instance spun up from zero) adds ~60 s for the L4 to initialise
+before inference begins. Use `min-instances 1` if cold-start latency is
+unacceptable (increases cost).
 
 ---
 
 ## Known Limitations
 
-- **MW > 600 Da molecules timeout**: CPU beam search does not complete within 90 s
-  for long SMILES (Paclitaxel 853 Da, Orforglipron 699 Da). GPU deployment needed.
+- **GPU cold-start**: Scaling from zero takes ~60 s on L4. First request after
+  idle period will be slow; subsequent warm requests are fast (see table above).
 - **Identity reactions**: Model occasionally emits product SMILES unchanged as
   the "reactant" (log-likelihood ≈ −1.2). Filter with `reactant == product` check.
 - **Forward scoring uses the backward model**: `backward_uspto50k` was fine-tuned
