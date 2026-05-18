@@ -1,0 +1,81 @@
+# Deploy to Google Cloud Run on every merge to main.
+#
+# Required GitHub secret (Settings → Secrets → Actions):
+#   GCP_SERVICE_ACCOUNT_KEY  — raw JSON key for a service account with:
+#                                roles/cloudbuild.builds.editor
+#                                roles/run.admin
+#                                roles/artifactregistry.writer
+#                                roles/storage.objectAdmin   (cloudbuild bucket)
+#                                roles/iam.serviceAccountUser
+#
+# Paste the full contents of your sa-key.json as the secret value (not base64 —
+# GitHub stores it verbatim; the google-github-actions/auth action handles it).
+#
+# Workload Identity Federation alternative: replace the credentials_json lines with
+#   workload_identity_provider: projects/125069248164/locations/global/workloadIdentityPools/...
+#   service_account: deploy@biochem-db-by-hobs.iam.gserviceaccount.com
+
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [main]
+
+env:
+  GCP_PROJECT: biochem-db-by-hobs
+  GCP_REGION: us-central1
+  SERVICE_NAME: chemformer-retrosynthesis
+  IMAGE: gcr.io/biochem-db-by-hobs/chemformer-retrosynthesis
+  CHEMFORMER_MODEL: gs://biochem-db-by-hobs/chemformer/retrosynthesis/backward_uspto50k.ckpt
+  CHEMFORMER_VOCAB: gs://biochem-db-by-hobs/chemformer/vocab/bart_vocab.json
+
+jobs:
+  build:
+    name: Build image via Cloud Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Submit build
+        run: |
+          gcloud builds submit \
+            --tag $IMAGE:${{ github.sha }} \
+            --timeout=3600 \
+            .
+
+      - name: Tag as latest
+        run: |
+          gcloud container images add-tag \
+            $IMAGE:${{ github.sha }} \
+            $IMAGE:latest \
+            --quiet
+
+  deploy:
+    name: Deploy to Cloud Run (GPU)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy
+        run: |
+          gcloud run deploy $SERVICE_NAME \
+            --image $IMAGE:${{ github.sha }} \
+            --region $GCP_REGION \
+            --gpu 1 \
+            --gpu-type nvidia-l4 \
+            --memory 8Gi \
+            --cpu 4 \
+            --allow-unauthenticated \
+            --set-env-vars "CHEMFORMER_N_GPUS=1,CHEMFORMER_MODEL=$CHEMFORMER_MODEL,CHEMFORMER_VOCAB=$CHEMFORMER_VOCAB" \
+            --quiet
