@@ -1,0 +1,63 @@
+# Deploy to Google Cloud Run on every merge to main.
+#
+# Required GitLab CI/CD variable (Settings → CI/CD → Variables):
+#   GCP_SERVICE_ACCOUNT_KEY  — base64-encoded JSON key for a service account
+#                              with these roles on biochem-db-by-hobs:
+#                                roles/cloudbuild.builds.editor
+#                                roles/run.admin
+#                                roles/artifactregistry.writer
+#                                roles/storage.objectAdmin   (for cloudbuild bucket)
+#                                roles/iam.serviceAccountUser  (to act as Compute SA)
+#
+# To encode your key file:
+#   base64 -w0 sa-key.json
+
+stages:
+  - build
+  - deploy
+
+variables:
+  GCP_PROJECT: biochem-db-by-hobs
+  GCP_REGION: us-central1
+  SERVICE_NAME: chemformer-retrosynthesis
+  IMAGE: gcr.io/$GCP_PROJECT/$SERVICE_NAME
+  CHEMFORMER_MODEL: gs://biochem-db-by-hobs/chemformer/retrosynthesis/backward_uspto50k.ckpt
+  CHEMFORMER_VOCAB: gs://biochem-db-by-hobs/chemformer/vocab/bart_vocab.json
+
+.gcp_base:
+  image: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+  before_script:
+    - echo "$GCP_SERVICE_ACCOUNT_KEY" | base64 -d > /tmp/sa-key.json
+    - gcloud auth activate-service-account --key-file=/tmp/sa-key.json
+    - gcloud config set project $GCP_PROJECT
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+build-image:
+  extends: .gcp_base
+  stage: build
+  script:
+    - |
+      gcloud builds submit \
+        --tag $IMAGE:$CI_COMMIT_SHA \
+        --timeout=3600 \
+        .
+    # Tag the new image as :latest as well
+    - gcloud container images add-tag $IMAGE:$CI_COMMIT_SHA $IMAGE:latest --quiet
+
+deploy-cloud-run:
+  extends: .gcp_base
+  stage: deploy
+  needs: [build-image]
+  script:
+    - |
+      gcloud run deploy $SERVICE_NAME \
+        --image $IMAGE:$CI_COMMIT_SHA \
+        --region $GCP_REGION \
+        --gpu 1 \
+        --gpu-type nvidia-l4 \
+        --memory 8Gi \
+        --cpu 4 \
+        --allow-unauthenticated \
+        --set-env-vars "CHEMFORMER_N_GPUS=1,CHEMFORMER_MODEL=$CHEMFORMER_MODEL,CHEMFORMER_VOCAB=$CHEMFORMER_VOCAB" \
+        --quiet

@@ -5,6 +5,7 @@
 # Large model and data files — not needed in build context
 src/molbart/bigmodels/
 src/molbart/bigdata/
+src/chemformer/data/
 /data/
 
 # Python artifacts
