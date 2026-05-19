@@ -23,7 +23,7 @@ Two integration scripts drive automated testing and pathway viability validation
 - Max instances: 3 (L4 GPU quota limit per region without zonal redundancy)
 - Timeout: 300 s
 - Concurrency: 1 (model inference is not thread-safe)
-- Min instances: 0 (scales to zero when idle; ~60 s GPU cold-start)
+- Min instances: 1 (always-on; eliminates ~60 s GPU cold-start)
 
 **Model files are NOT baked into the Docker image.** They are downloaded from GCS
 at container startup via env vars:
@@ -49,7 +49,7 @@ gcloud run deploy chemformer-retrosynthesis \
   --image "gcr.io/biochem-db-by-hobs/chemformer-retrosynthesis@${DIGEST}" \
   --region us-central1 \
   --gpu 1 --gpu-type nvidia-l4 \
-  --memory 16Gi --cpu 4 --max-instances 3 \
+  --memory 16Gi --cpu 4 --min-instances 1 --max-instances 3 \
   --no-gpu-zonal-redundancy \
   --allow-unauthenticated \
   --set-env-vars "CHEMFORMER_N_GPUS=1,CHEMFORMER_MODEL=gs://biochem-db-by-hobs/chemformer/retrosynthesis/backward_uspto50k.ckpt,CHEMFORMER_VOCAB=gs://biochem-db-by-hobs/chemformer/retrosynthesis/bart_vocab.json" \
@@ -250,8 +250,8 @@ unacceptable (increases cost).
 
 ## Known Limitations
 
-- **GPU cold-start**: Scaling from zero takes ~60 s on L4. First request after
-  idle period will be slow; subsequent warm requests are fast (see table above).
+- **GPU cold-start**: Not applicable with `min-instances 1` — one L4 instance is
+  always running. If it is ever scaled down manually, restart takes ~60 s.
 - **Identity reactions**: Model occasionally emits product SMILES unchanged as
   the "reactant" (log-likelihood ≈ −1.2). Filter with `reactant == product` check.
 - **Forward scoring uses the backward model**: `backward_uspto50k` was fine-tuned

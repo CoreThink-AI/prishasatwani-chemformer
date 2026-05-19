@@ -76,6 +76,7 @@ jobs:
             --gpu-type nvidia-l4 \
             --memory 16Gi \
             --cpu 4 \
+            --min-instances 1 \
             --max-instances 3 \
             --no-gpu-zonal-redundancy \
             --allow-unauthenticated \
