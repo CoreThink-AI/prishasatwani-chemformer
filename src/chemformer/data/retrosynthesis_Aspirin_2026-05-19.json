@@ -1,0 +1,51 @@
+{
+  "_meta": {
+    "query_date": "2026-05-19",
+    "query_timestamp_utc": "2026-05-19T19:58:07.494512+00:00",
+    "source": "aizynthfinder-chemformer-jk6up23xdq-uc.a.run.app",
+    "compound": {
+      "query_name": "Aspirin",
+      "pubchem_cid": 2244,
+      "pubchem_name": "2-acetyloxybenzoic acid",
+      "smiles": "CC(=O)OC1=CC=CC=C1C(=O)O",
+      "canonical_aromatic_smiles": "CC(=O)Oc1ccccc1C(=O)O",
+      "complexity": 212,
+      "molecular_weight": 180.16,
+      "inchikey": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N",
+      "inchi": "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)",
+      "vendor_count": 533,
+      "bioassay_count": 3367
+    },
+    "request": {
+      "smiles": "CC(=O)Oc1ccccc1C(=O)O",
+      "time_limit": 300,
+      "iteration_limit": 200,
+      "max_routes": 20
+    },
+    "api_config": {
+      "endpoint": "https://aizynthfinder-chemformer-jk6up23xdq-uc.a.run.app/retrosynthesis",
+      "expansion_policies": [
+        "chemformer"
+      ],
+      "filter_policies": [],
+      "stocks": [],
+      "note": "No stock/purchasability database configured on this deployment. purchasable_routes and non_purchasable_routes are always empty. number_of_routes reflects total MCTS trajectories explored, not extractable synthesis trees."
+    }
+  },
+  "response": {
+    "target_smiles": "CC(=O)Oc1ccccc1C(=O)O",
+    "stats": {
+      "search_time_seconds": 132.5329351425171,
+      "iterations": 200,
+      "expansion_calls": 920,
+      "number_of_nodes": 1108,
+      "number_of_routes": 200,
+      "number_of_solved_routes": 0,
+      "is_solved": false,
+      "top_score": 0.049100689501895424
+    },
+    "stock_configured": false,
+    "purchasable_routes": [],
+    "non_purchasable_routes": []
+  }
+}
