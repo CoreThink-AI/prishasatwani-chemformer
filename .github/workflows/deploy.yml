@@ -20,6 +20,9 @@ name: Deploy to Cloud Run
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
 
 env:
   GCP_PROJECT: biochem-db-by-hobs
