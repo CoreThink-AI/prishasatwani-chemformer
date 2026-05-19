@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 git commit -am "autopush to origin and upstream-fork from $PWD/push"
-echo Pushing to upstream-fork main : git@github.com:hobson/prishasatwani-chemformer
-git push upstream-fork main
-echo Pushing to origin main : git@github.com:CoreThink-AI/prishasatwani-chemformer
-git push -u origin main
-echo Pushing to gitlab main : git@gitlab.com:hobs/chemformer
-git push -u gitlab main
+echo Pushing to GitHub upstream-fork hobs : git@github.com:hobson/prishasatwani-chemformer
+git push upstream-fork hobs
+echo Pushing to GitHub origin hobs : git@github.com:CoreThink-AI/prishasatwani-chemformer
+git push -u origin hobs
+echo Pushing to remote named gitlab hobs branch : git@gitlab.com:hobs/chemformer
+git push -u gitlab hobs
+
