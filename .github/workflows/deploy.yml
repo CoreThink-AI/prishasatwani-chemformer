@@ -79,8 +79,9 @@ jobs:
             --gpu-type nvidia-l4 \
             --memory 16Gi \
             --cpu 4 \
+            --concurrency 1 \
             --min-instances 1 \
-            --max-instances 3 \
+            --max-instances 6 \
             --no-gpu-zonal-redundancy \
             --allow-unauthenticated \
             --set-env-vars "CHEMFORMER_N_GPUS=1,CHEMFORMER_MODEL=$CHEMFORMER_MODEL,CHEMFORMER_VOCAB=$CHEMFORMER_VOCAB" \
