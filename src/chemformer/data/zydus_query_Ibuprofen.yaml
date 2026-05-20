@@ -1,0 +1,180 @@
+_meta:
+  query_date: '2026-05-20'
+  query_timestamp_utc: '2026-05-20T23:11:00.997529+00:00'
+  elapsed_seconds: 470.72
+  source: aizynthfinder-chemformer-jk6up23xdq-uc.a.run.app
+  compound:
+    query_name: Ibuprofen
+    pubchem_cid: 3672
+    pubchem_name: 2-[4-(2-methylpropyl)phenyl]propanoic acid
+    smiles: CC(C)CC1=CC=C(C=C1)[C@@H](C)C(=O)O
+    complexity: 203
+    inchikey: HEFNNWSXXWATRW-UHFFFAOYSA-N
+    inchi: InChI=1S/C13H18O2/c1-9(2)8-11-4-6-12(7-5-11)10(3)13(14)15/h4-7,9-10H,8H2,1-3H3,(H,14,15)
+    vendor_count: 515
+    bioassay_count: 3443
+  request:
+    time_limit: 300
+    iteration_limit: 200
+    max_routes: 20
+  evaluation:
+    tool: RDKit
+    rdkit_version: 2022.09.3
+    evaluation_note: Reaction SMILES are stored in retrosynthetic direction (product>>precursors).
+      Atom imbalance reflects implied byproducts (e.g. HCl, H2O, CH3COOH) that AiZynthFinder
+      omits from the route representation. chemically_plausible=True means every reaction
+      has valid SMILES and no phantom atoms (atoms that appear in the product but
+      are absent from the precursors).
+    summary:
+      total_routes: 2
+      routes_with_all_valid_smiles: 2
+      routes_chemically_plausible: 2
+    tracks:
+      '1':
+        stats: &id001
+          search_time_seconds: 105.7480080127716
+          iterations: 200
+          expansion_calls: 380
+          number_of_nodes: 479
+          number_of_routes: 123
+          number_of_solved_routes: 34
+          is_solved: true
+          top_score: 0.9976287063411217
+        route_evaluations: []
+      '2':
+        stats: &id002
+          search_time_seconds: 318.1330852508545
+          iterations: 6
+          expansion_calls: 40
+          number_of_nodes: 46
+          number_of_routes: 6
+          number_of_solved_routes: 0
+          is_solved: false
+          top_score: 0.6698862622648335
+        route_evaluations:
+        - category: non_purchasable_routes
+          route_index: 0
+          target_smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+          target_smiles_valid: true
+          score: &id003
+            state score: 0.5226287063411217
+            number of reactions: 1
+            number of pre-cursors: 2
+            number of pre-cursors in stock: 1
+          all_reaction_smiles_valid: true
+          chemically_plausible: true
+          reactions:
+          - reaction_smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1>>COC(=O)[C@H](C)c1ccc(CC(C)C)cc1.[OH-]
+            all_smiles_valid: true
+            balanced: false
+            implied_byproduct_formula: CH3O
+            note: 'retrosynthetic disconnection — forward reaction: precursors → product
+              + CH3O'
+            policy_probability: 0.12256267409470754
+            precursors:
+            - smiles: '[OH-]'
+              smiles_valid: true
+              in_stock: false
+            - smiles: COC(=O)[C@H](C)c1ccc(CC(C)C)cc1
+              smiles_valid: true
+              in_stock: true
+        - category: non_purchasable_routes
+          route_index: 1
+          target_smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+          target_smiles_valid: true
+          score: &id004
+            state score: 0.5226287063411217
+            number of reactions: 1
+            number of pre-cursors: 2
+            number of pre-cursors in stock: 1
+          all_reaction_smiles_valid: true
+          chemically_plausible: true
+          reactions:
+          - reaction_smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1>>CC(C)Cc1ccc([C@@H](C)O)cc1.[C-]#[O+]
+            all_smiles_valid: true
+            balanced: true
+            note: atom-balanced (no byproduct)
+            policy_probability: 0.10445682451253484
+            precursors:
+            - smiles: '[C-]#[O+]'
+              smiles_valid: true
+              in_stock: false
+            - smiles: CC(C)Cc1ccc([C@@H](C)O)cc1
+              smiles_valid: true
+              in_stock: true
+response:
+  target_smiles: CC(C)CC1=CC=C(C=C1)[C@@H](C)C(=O)O
+  stock_configured: true
+  tracks:
+    '1':
+      tag: 1
+      stats: *id001
+      purchasable_routes: []
+      non_purchasable_routes: []
+      error: null
+    '2':
+      tag: 2
+      stats: *id002
+      purchasable_routes: []
+      non_purchasable_routes:
+      - type: mol
+        hide: false
+        smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+        is_chemical: true
+        in_stock: false
+        children:
+        - type: reaction
+          hide: false
+          smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1>>COC(=O)[C@H](C)c1ccc(CC(C)C)cc1.[OH-]
+          is_reaction: true
+          metadata:
+            policy_probability: 0.12256267409470754
+            policy_probability_rank: 1
+            policy_name: claude
+            mapped_reaction_smiles: '[CH3:1][CH:2]([CH3:3])[CH2:4][c:5]1[cH:6][cH:7][c:8]([C@@H:9]([CH3:10])[C:11](=[O:12])[OH:13])[cH:14][cH:15]1>>[CH3:16][CH:17]([CH3:18])[CH2:19][c:20]1[cH:21][cH:22][c:23]([C@@H:24]([CH3:25])[C:26](=[O:27])[O:28][CH3:29])[cH:30][cH:31]1.[OH-:32]'
+          children:
+          - type: mol
+            hide: false
+            smiles: '[OH-]'
+            is_chemical: true
+            in_stock: false
+          - type: mol
+            hide: false
+            smiles: COC(=O)[C@H](C)c1ccc(CC(C)C)cc1
+            is_chemical: true
+            in_stock: true
+        scores: *id003
+        metadata:
+          created_at_iteration: 2
+          is_solved: false
+      - type: mol
+        hide: false
+        smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1
+        is_chemical: true
+        in_stock: false
+        children:
+        - type: reaction
+          hide: false
+          smiles: CC(C)Cc1ccc([C@@H](C)C(=O)O)cc1>>CC(C)Cc1ccc([C@@H](C)O)cc1.[C-]#[O+]
+          is_reaction: true
+          metadata:
+            policy_probability: 0.10445682451253484
+            policy_probability_rank: 2
+            policy_name: claude
+            mapped_reaction_smiles: '[CH3:1][CH:2]([CH3:3])[CH2:4][c:5]1[cH:6][cH:7][c:8]([C@@H:9]([CH3:10])[C:11](=[O:12])[OH:13])[cH:14][cH:15]1>>[CH3:16][CH:17]([CH3:18])[CH2:19][c:20]1[cH:21][cH:22][c:23]([C@H:24]([OH:25])[CH3:26])[cH:27][cH:28]1.[C-:29]#[O+:30]'
+          children:
+          - type: mol
+            hide: false
+            smiles: '[C-]#[O+]'
+            is_chemical: true
+            in_stock: false
+          - type: mol
+            hide: false
+            smiles: CC(C)Cc1ccc([C@@H](C)O)cc1
+            is_chemical: true
+            in_stock: true
+        scores: *id004
+        metadata:
+          created_at_iteration: 4
+          is_solved: false
+      error: null
