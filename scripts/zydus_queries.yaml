@@ -175,7 +175,8 @@ molecules:
   - query_name: Apixaban
     pubchem_cid: 10182969
     pubchem_name: "1-(4-methoxyphenyl)-7-oxo-6-[4-(2-oxopiperidin-1-yl)phenyl]-4,5-dihydropyrazolo[5,4-c]pyridine-3-carboxamide"
-    smiles: "COC1=CC=C(C=C1)N2C3=C(CCN(C3=O)C4=CC=C(C=C4)N5CCCCC5=O)C(=N2)C(=O)N"
+    smiles: "
+    "
     complexity: 777
     molecular_weight: 459.5
     inchikey: "QNZCBYKSOIHPEH-UHFFFAOYSA-N"
@@ -208,3 +209,5 @@ molecules:
     vendor_count: 193
     bioassay_count: 308
     # Factor Xa inhibitor; Xarelto (Bayer/J&J); approved DVT, PE, AF anticoagulation
+
+  - query_name: Etoposide
