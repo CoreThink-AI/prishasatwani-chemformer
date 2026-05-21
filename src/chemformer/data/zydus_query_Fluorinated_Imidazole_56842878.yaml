@@ -1,0 +1,231 @@
+_meta:
+  query_date: '2026-05-20'
+  query_timestamp_utc: '2026-05-20T23:39:27.975199+00:00'
+  elapsed_seconds: 420.15
+  source: aizynthfinder-chemformer-jk6up23xdq-uc.a.run.app
+  compound:
+    query_name: Fluorinated_Imidazole
+    pubchem_cid: 56842878
+    pubchem_name: (2S)-N-[(2S)-1-[(2S)-2-carbamoylpyrrolidin-1-yl]-3-(4-fluoro-1H-imidazol-5-yl)-1-oxopropan-2-yl]-5-oxopyrrolidine-2-carboxamide
+    smiles: C1C[C@H](N(C1)C(=O)[C@H](CC2=C(N=CN2)F)NC(=O)[C@@H]3CCC(=O)N3)C(=O)N
+    complexity: 632
+    inchikey: VECOTGLMMHXBFE-LSJOCFKGSA-N
+    inchi: InChI=1S/C16H21FN6O4/c17-13-9(19-7-20-13)6-10(22-15(26)8-3-4-12(24)21-8)16(27)23-5-1-2-11(23)14(18)25/h7-8,10-11H,1-6H2,(H2,18,25)(H,19,20)(H,21,24)(H,22,26)/t8-,10-,11-/m0/s1
+    vendor_count: 9
+    bioassay_count: 0
+  request:
+    time_limit: 300
+    iteration_limit: 200
+    max_routes: 20
+  evaluation:
+    tool: RDKit
+    rdkit_version: 2022.09.3
+    evaluation_note: Reaction SMILES are stored in retrosynthetic direction (product>>precursors).
+      Atom imbalance reflects implied byproducts (e.g. HCl, H2O, CH3COOH) that AiZynthFinder
+      omits from the route representation. chemically_plausible=True means every reaction
+      has valid SMILES and no phantom atoms (atoms that appear in the product but
+      are absent from the precursors).
+    summary:
+      total_routes: 1
+      routes_with_all_valid_smiles: 1
+      routes_chemically_plausible: 1
+    tracks:
+      '1':
+        stats: &id001
+          search_time_seconds: 70.46257615089417
+          iterations: 200
+          expansion_calls: 889
+          number_of_nodes: 1089
+          number_of_routes: 200
+          number_of_solved_routes: 0
+          is_solved: false
+          top_score: 0.7374999999999999
+        route_evaluations: []
+      '2':
+        stats: &id002
+          search_time_seconds: 349.41045594215393
+          iterations: 7
+          expansion_calls: 43
+          number_of_nodes: 50
+          number_of_routes: 7
+          number_of_solved_routes: 0
+          is_solved: false
+          top_score: 0.7976268127677725
+        route_evaluations:
+        - category: non_purchasable_routes
+          route_index: 0
+          target_smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+          target_smiles_valid: true
+          score: &id003
+            state score: 0.785
+            number of reactions: 4
+            number of pre-cursors: 5
+            number of pre-cursors in stock: 4
+          all_reaction_smiles_valid: true
+          chemically_plausible: true
+          reactions:
+          - reaction_smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1>>NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)OCC1c2ccccc2-c2ccccc21.O=C1CC[C@@H](C(=O)O)N1
+            all_smiles_valid: true
+            balanced: false
+            implied_byproduct_formula: C15H12O3
+            note: 'retrosynthetic disconnection — forward reaction: precursors → product
+              + C15H12O3'
+            policy_probability: 0.06980802792321117
+            precursors:
+            - smiles: O=C1CC[C@@H](C(=O)O)N1
+              smiles_valid: true
+              in_stock: true
+            - smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)OCC1c2ccccc2-c2ccccc21
+              smiles_valid: true
+              in_stock: false
+          - reaction_smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)OCC1c2ccccc2-c2ccccc21>>NC(=O)[C@@H]1CCCN1.O=C(N[C@@H](Cc1[nH]cnc1F)C(=O)O)OCC1c2ccccc2-c2ccccc21
+            all_smiles_valid: true
+            balanced: false
+            implied_byproduct_formula: H2O
+            note: 'retrosynthetic disconnection — forward reaction: precursors → product
+              + H2O'
+            policy_probability: 0.19153225806451613
+            precursors:
+            - smiles: NC(=O)[C@@H]1CCCN1
+              smiles_valid: true
+              in_stock: true
+            - smiles: O=C(N[C@@H](Cc1[nH]cnc1F)C(=O)O)OCC1c2ccccc2-c2ccccc21
+              smiles_valid: true
+              in_stock: false
+          - reaction_smiles: O=C(N[C@@H](Cc1[nH]cnc1F)C(=O)O)OCC1c2ccccc2-c2ccccc21>>O=C(Cl)OCC1c2ccccc2-c2ccccc21.N[C@@H](Cc1[nH]cnc1F)C(=O)O
+            all_smiles_valid: true
+            balanced: false
+            implied_byproduct_formula: HCl
+            note: 'retrosynthetic disconnection — forward reaction: precursors → product
+              + HCl'
+            policy_probability: 0.1515650741350906
+            precursors:
+            - smiles: N[C@@H](Cc1[nH]cnc1F)C(=O)O
+              smiles_valid: true
+              in_stock: false
+            - smiles: O=C(Cl)OCC1c2ccccc2-c2ccccc21
+              smiles_valid: true
+              in_stock: false
+          - reaction_smiles: O=C(Cl)OCC1c2ccccc2-c2ccccc21>>OCC1c2ccccc2-c2ccccc21.O=C(Cl)Cl
+            all_smiles_valid: true
+            balanced: false
+            implied_byproduct_formula: HCl
+            note: 'retrosynthetic disconnection — forward reaction: precursors → product
+              + HCl'
+            policy_probability: 0.1781818181818182
+            precursors:
+            - smiles: O=C(Cl)Cl
+              smiles_valid: true
+              in_stock: true
+            - smiles: OCC1c2ccccc2-c2ccccc21
+              smiles_valid: true
+              in_stock: true
+response:
+  target_smiles: C1C[C@H](N(C1)C(=O)[C@H](CC2=C(N=CN2)F)NC(=O)[C@@H]3CCC(=O)N3)C(=O)N
+  stock_configured: true
+  tracks:
+    '1':
+      tag: 1
+      stats: *id001
+      purchasable_routes: []
+      non_purchasable_routes: []
+      error: null
+    '2':
+      tag: 2
+      stats: *id002
+      purchasable_routes: []
+      non_purchasable_routes:
+      - type: mol
+        hide: false
+        smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1
+        is_chemical: true
+        in_stock: false
+        children:
+        - type: reaction
+          hide: false
+          smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)[C@@H]1CCC(=O)N1>>NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)OCC1c2ccccc2-c2ccccc21.O=C1CC[C@@H](C(=O)O)N1
+          is_reaction: true
+          metadata:
+            policy_probability: 0.06980802792321117
+            policy_probability_rank: 8
+            policy_name: claude
+            mapped_reaction_smiles: '[NH2:1][C:2](=[O:3])[C@@H:4]1[CH2:5][CH2:6][CH2:7][N:8]1[C:9](=[O:10])[C@H:11]([CH2:12][c:13]1[nH:14][cH:15][n:16][c:17]1[F:18])[NH:19][C:20](=[O:21])[C@@H:22]1[CH2:23][CH2:24][C:25](=[O:26])[NH:27]1>>[NH2:28][C:29](=[O:30])[C@@H:31]1[CH2:32][CH2:33][CH2:34][N:35]1[C:36](=[O:37])[C@H:38]([CH2:39][c:40]1[nH:41][cH:42][n:43][c:44]1[F:45])[NH:46][C:47](=[O:48])[O:49][CH2:50][CH:51]1[c:52]2[cH:53][cH:54][cH:55][cH:56][c:57]2-[c:58]2[cH:59][cH:60][cH:61][cH:62][c:63]21.[O:64]=[C:65]([OH:66])[C@@H:67]1[CH2:68][CH2:69][C:70](=[O:71])[NH:72]1'
+          children:
+          - type: mol
+            hide: false
+            smiles: O=C1CC[C@@H](C(=O)O)N1
+            is_chemical: true
+            in_stock: true
+          - type: mol
+            hide: false
+            smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)OCC1c2ccccc2-c2ccccc21
+            is_chemical: true
+            in_stock: false
+            children:
+            - type: reaction
+              hide: false
+              smiles: NC(=O)[C@@H]1CCCN1C(=O)[C@H](Cc1[nH]cnc1F)NC(=O)OCC1c2ccccc2-c2ccccc21>>NC(=O)[C@@H]1CCCN1.O=C(N[C@@H](Cc1[nH]cnc1F)C(=O)O)OCC1c2ccccc2-c2ccccc21
+              is_reaction: true
+              metadata:
+                policy_probability: 0.19153225806451613
+                policy_probability_rank: 0
+                policy_name: claude
+                mapped_reaction_smiles: '[NH2:28][C:29](=[O:30])[C@@H:31]1[CH2:32][CH2:33][CH2:34][N:35]1[C:36](=[O:37])[C@H:38]([CH2:39][c:40]1[nH:41][cH:42][n:43][c:44]1[F:45])[NH:46][C:47](=[O:48])[O:49][CH2:50][CH:51]1[c:52]2[cH:53][cH:54][cH:55][cH:56][c:57]2-[c:58]2[cH:59][cH:60][cH:61][cH:62][c:63]21>>[NH2:1][C:2](=[O:3])[C@@H:4]1[CH2:5][CH2:6][CH2:7][NH:8]1.[OH:9][C:10](=[O:11])[C@H:12]([CH2:13][c:14]1[nH:15][cH:16][n:17][c:18]1[F:19])[NH:20][C:21](=[O:22])[O:23][CH2:24][CH:25]1[c:26]2[cH:27][cH:64][cH:65][cH:66][c:67]2-[c:68]2[cH:69][cH:70][cH:71][cH:72][c:73]21'
+              children:
+              - type: mol
+                hide: false
+                smiles: NC(=O)[C@@H]1CCCN1
+                is_chemical: true
+                in_stock: true
+              - type: mol
+                hide: false
+                smiles: O=C(N[C@@H](Cc1[nH]cnc1F)C(=O)O)OCC1c2ccccc2-c2ccccc21
+                is_chemical: true
+                in_stock: false
+                children:
+                - type: reaction
+                  hide: false
+                  smiles: O=C(N[C@@H](Cc1[nH]cnc1F)C(=O)O)OCC1c2ccccc2-c2ccccc21>>O=C(Cl)OCC1c2ccccc2-c2ccccc21.N[C@@H](Cc1[nH]cnc1F)C(=O)O
+                  is_reaction: true
+                  metadata:
+                    policy_probability: 0.1515650741350906
+                    policy_probability_rank: 0
+                    policy_name: claude
+                    mapped_reaction_smiles: '[OH:9][C:10](=[O:11])[C@H:12]([CH2:13][c:14]1[nH:15][cH:16][n:17][c:18]1[F:19])[NH:20][C:21](=[O:22])[O:23][CH2:24][CH:25]1[c:26]2[cH:27][cH:64][cH:65][cH:66][c:67]2-[c:68]2[cH:69][cH:70][cH:71][cH:72][c:73]21>>[O:1]=[C:2]([Cl:3])[O:4][CH2:5][CH:6]1[c:7]2[cH:8][cH:28][cH:29][cH:30][c:31]2-[c:32]2[cH:33][cH:34][cH:35][cH:36][c:37]21.[NH2:38][C@@H:39]([CH2:40][c:41]1[nH:42][cH:43][n:44][c:45]1[F:46])[C:47](=[O:48])[OH:49]'
+                  children:
+                  - type: mol
+                    hide: false
+                    smiles: N[C@@H](Cc1[nH]cnc1F)C(=O)O
+                    is_chemical: true
+                    in_stock: false
+                  - type: mol
+                    hide: false
+                    smiles: O=C(Cl)OCC1c2ccccc2-c2ccccc21
+                    is_chemical: true
+                    in_stock: false
+                    children:
+                    - type: reaction
+                      hide: false
+                      smiles: O=C(Cl)OCC1c2ccccc2-c2ccccc21>>OCC1c2ccccc2-c2ccccc21.O=C(Cl)Cl
+                      is_reaction: true
+                      metadata:
+                        policy_probability: 0.1781818181818182
+                        policy_probability_rank: 0
+                        policy_name: claude
+                        mapped_reaction_smiles: '[O:1]=[C:2]([Cl:3])[O:4][CH2:5][CH:6]1[c:7]2[cH:8][cH:28][cH:29][cH:30][c:31]2-[c:32]2[cH:33][cH:34][cH:35][cH:36][c:37]21>>[OH:9][CH2:10][CH:11]1[c:12]2[cH:13][cH:14][cH:15][cH:16][c:17]2-[c:18]2[cH:19][cH:20][cH:21][cH:22][c:23]21.[O:24]=[C:25]([Cl:26])[Cl:27]'
+                      children:
+                      - type: mol
+                        hide: false
+                        smiles: O=C(Cl)Cl
+                        is_chemical: true
+                        in_stock: true
+                      - type: mol
+                        hide: false
+                        smiles: OCC1c2ccccc2-c2ccccc21
+                        is_chemical: true
+                        in_stock: true
+        scores: *id003
+        metadata:
+          created_at_iteration: 7
+          is_solved: false
+      error: null
