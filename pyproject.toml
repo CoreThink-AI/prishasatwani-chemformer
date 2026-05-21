@@ -2,7 +2,8 @@
 name = "chemformer"
 readme = "README.md"
 requires-python = ">=3.10.0,<3.11.0"
-version = "2.2.3"
+# bumped to 2.3 for Python 3.8->3.10
+version = "2.3.0"
 description = "Smiles-based synthesis prediction."
 authors = [
     {name = "Irwin, Ross", email = "ross.irwin1@astrazeneca.com"},
