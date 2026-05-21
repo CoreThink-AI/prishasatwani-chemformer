@@ -1,11 +1,11 @@
 from typing import List, Tuple
 
 import numpy as np
-from pysmilesutils.augment import SMILESAugmenter
 
 import molbart.utils.data_utils as util
-from molbart.models import Chemformer
 from molbart.data import SynthesisDataModule
+from molbart.models import Chemformer
+from pysmilesutils.augment import SMILESAugmenter
 
 
 def calculate_llhs(chemformer: Chemformer, reactants: List[str], products: List[str]) -> List[float]:

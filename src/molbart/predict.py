@@ -1,9 +1,11 @@
-import hydra
+from pathlib import Path
+
+import omegaconf as oc
 import pandas as pd
 
-import molbart.utils.data_utils as util
-from molbart.models import Chemformer
 from molbart.constants import CONFIG_DIR
+from molbart.models import Chemformer
+
 
 def write_predictions(args, smiles, log_lhs, original_smiles):
     num_data = len(smiles)
@@ -27,18 +29,31 @@ def write_predictions(args, smiles, log_lhs, original_smiles):
     df.to_csv(args.output_sampled_smiles, sep="\t", index=False)
 
 
-@hydra.main(version_base=None, config_path=str(CONFIG_DIR), config_name="predict")
-def main(args):
-    chemformer = Chemformer(args)
+# @hydra.main(version_base=None, config_path=Path(CONFIG_DIR) / "predict.yaml"))
+def predict_reaction(config_path=Path(CONFIG_DIR) / "predict.yaml", batch_size=None, n_beams=10, task="backward_prediction", **kwargs):
+    """ Predict the retrosynthesis SMARTS (reactants) from product SMILES """
+    config = oc.OmegaConf.load(config_path)
+    config.n_beams = config.n_beams if n_beams is None else n_beams
+    config.batch_size = config.batch_size if batch_size is None else batch_size
+    config.task = config.task if task is None else task
+    for k in kwargs:
+        assert hasattr(config, k), f"Config file {config_path} does not have attribute {k}."
+        setattr(config, k, kwargs[k])
+    # model_path = os.environ["CHEMFORMER_DISCONNECTION_MODEL"]
+    # model_type = "bart"
+    # config.n_unique_beams = 10 # Make sure we output unique predictions
+    # config.vocabulary_path = os.environ["CHEMFORMER_VOCAB"]
+    # config.datamodule = None
+    chemformer = Chemformer(config)
 
-    print("Making predictions...")
+    print(f"Making task={config.task} predictions on dataset_part={config.dataset_part} using model={config.model_path}...")
     smiles, log_lhs, original_smiles = chemformer.predict(
-        dataset=args.dataset_part,
+        dataset=config.dataset_part,  # full, test, val, train
     )
-    write_predictions(args, smiles, log_lhs, original_smiles)
-    print("Finished predictions.")
-    return
+    prediction = dict(smiles=smiles, log_lhs=log_lhs, original_smiles=original_smiles, config=config)
+    write_predictions(**prediction)
+    return prediction
 
 
 if __name__ == "__main__":
-    main()
+    predict_reaction()

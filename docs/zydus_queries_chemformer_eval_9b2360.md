@@ -8,27 +8,19 @@
 
 ## Summary
 
-- Aspirin, Ibuprofen, Tolyl_Pyridine: reactants found and purchasable — the model produces real, buyable precursors for simple molecules
-- Complexity delta: positive means reactants are more complex than the product (unusual for retrosynthesis); the Paclitaxel −1649 reflects one reactant not being found so the delta is
-dominated by a single large fragment
-- Many reactants not found: the model often produces valid-looking SMILES that aren't exact PubChem matches — these may be real compounds under different tautomers/stereochemistry, or model
-hallucinations
-
-
 | Molecule | CID | log-likelihood | Quality | Reactants found | Purchasable | Δ complexity |
 |----------|-----|---------------|---------|-----------------|-------------|-------------|
 | Aspirin | 2244 | -0.942 | 🟢 high | ✓ | ✓ | +25 |
 | Ibuprofen | 3672 | -1.835 | 🟢 high | ✓ | ✓ | +24 |
-| Tolyl_Pyridine | 603589 | -2.487 | 🟢 high | ✓ | ✓ | +0 |
 | Paclitaxel | 36314 | -17.819 | 🔴 low | ✗ | ✗ | -1649 |
 | Etoricoxib | 123619 | -2.785 | 🔴 low | ✗ | ✗ | -495 |
 | Camlipixant | 76955630 | -3.965 | 🔴 low | ✗ | ✗ | -702 |
 | Fluorinated_Imidazole | 84117446 | -2.507 | 🔴 low | ✗ | ✗ | n/a |
 | Fluorinated_Imidazole | 56842878 | -2.645 | 🔴 low | ✗ | ✗ | n/a |
 | Methoxy_Diphenylamine | 11435828 | -2.751 | 🔴 low | ✗ | ✗ | -189 |
+| Tolyl_Pyridine | 603589 | -2.487 | 🟢 high | ✓ | ✓ | +0 |
 | Orforglipron | 137319706 | -24.058 | 🔴 low | ✗ | ✗ | n/a |
 | Acalabrutinib | 71226662 | -3.200 | 🔴 low | ✗ | ✗ | -733 |
-
 
 ## Per-molecule details
 

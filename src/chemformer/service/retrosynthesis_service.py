@@ -29,18 +29,18 @@ Run locally:
 import os
 import tempfile
 from pathlib import PurePosixPath
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 import omegaconf as oc
 import torch
-from rdkit import Chem
-import molbart.utils.data_utils as util
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+from rdkit import Chem
+
+import molbart.utils.data_utils as util
 from molbart.constants import CONFIG_DIR
 from molbart.data.util import BatchEncoder
 from molbart.models import Chemformer
-from pydantic import BaseModel, Field
-
 
 # ── path helpers ─────────────────────────────────────────────────────────────
 
@@ -106,8 +106,6 @@ for _preload_name in ("backward_uspto50k", "uspto_50_last_v2"):
         except Exception as _e:
             print(f"Warning: could not pre-load '{_preload_name}': {_e}")
 
-
-# ── FastAPI app ───────────────────────────────────────────────────────────────
 
 _DESCRIPTION = """
 Predict synthetic routes for a target molecule using the Chemformer BART model
